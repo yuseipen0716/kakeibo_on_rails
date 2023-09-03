@@ -10,11 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_03_173024) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_03_173317) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "expense_records", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "category_id", null: false
+    t.integer "expense_type", default: 0, null: false
+    t.integer "amount", null: false
+    t.datetime "transaction_date", null: false
+    t.text "memorandum"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_expense_records_on_category_id"
+    t.index ["user_id"], name: "index_expense_records_on_user_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -32,5 +45,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_03_173024) do
     t.index ["group_id"], name: "index_users_on_group_id"
   end
 
+  add_foreign_key "expense_records", "categories"
+  add_foreign_key "expense_records", "users"
   add_foreign_key "users", "groups"
 end
