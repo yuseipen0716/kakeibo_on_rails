@@ -3,7 +3,7 @@ class ExpenseRecord < ApplicationRecord
   belongs_to :category
 
   enum type: {
-    expense: 0
+    expense: 0,
     income: 1
   }
 end
