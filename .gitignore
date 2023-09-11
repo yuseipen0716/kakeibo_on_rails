@@ -34,3 +34,6 @@
 
 # Ignore environment variable file
 .env
+
+# Ignore certs
+/certbot-init/conf/*
