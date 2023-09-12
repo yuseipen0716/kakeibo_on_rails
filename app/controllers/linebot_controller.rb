@@ -16,13 +16,13 @@ class LinebotController < ApplicationController
     # 一旦message eventのみ対応。
     events.each do |event|
       if event.is_a?(Line::Bot::Event::Message)
-        user_id = event['source']['userId']
-        if is_new_user?(user_id)
-          user_name = get_user_name(user_id)
-          CreateUserUsecase.perform(user_id, user_name)
+        line_id = event['source']['userId']
+        if is_new_user?(line_id)
+          user_name = get_user_name(line_id)
+          CreateUserUsecase.perform(line_id, user_name)
         end
 
-        reply_text = MessageHandler.perform(event.message['text'])
+        reply_text = MessageHandler.perform(event.message['text'], line_id)
 
         message = {
           type: 'text',
@@ -44,17 +44,17 @@ class LinebotController < ApplicationController
     end
   end
 
-  def is_new_user?(user_id)
-    !User.find_by(line_id: user_id)
+  def is_new_user?(line_id)
+    !User.find_by(line_id: line_id)
   end
 
-  def get_user_name(user_id)
-    response = client.get_profile(user_id)
+  def get_user_name(line_id)
+    response = client.get_profile(line_id)
 
     if response.is_a?(Net::HTTPSuccess)
       JSON.parse(response.body)['displayName']
     else
-      Rails.logger.error("Failed to fetch user name for user_id: #{user_id}. Response: #{response.body}")
+      Rails.logger.error("Failed to fetch user name for user_id: #{line_id}. Response: #{response.body}")
       'Unknown User'
       return
     end
