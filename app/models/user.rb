@@ -22,4 +22,11 @@
 class User < ApplicationRecord
   belongs_to :group, optional: true
   has_many :expense_records
+
+  enum talk_mode: {
+    default: 0,
+    input: 1,
+    show: 2,
+    group: 3
+  }
 end
