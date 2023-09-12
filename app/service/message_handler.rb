@@ -7,14 +7,18 @@ class MessageHandler
   }.freeze
   class << self
     # messageを受け取り、適切な処理に振り分け、replyを返す
-    def perform(message)
+    def perform(message, line_id)
+      current_user = User.find_by(line_id: line_id)
       case message
       when BUILT_IN_MESSAGE[:INPUT]
-        return 'にゅうりょく'
+        current_user.update!(talk_mode: :input_mode)
+        return "トークモード: #{current_user.talk_mode}"
       when BUILT_IN_MESSAGE[:SHOW]
-        return 'かくにん'
+        current_user.update(talk_mode: :show_mode)
+        return "トークモード: #{current_user.talk_mode}"
       when BUILT_IN_MESSAGE[:GROUP]
-        return 'ぐるーぷ'
+        current_user.update(talk_mode: :group_mode)
+        return "トークモード: #{current_user.talk_mode}"
       when BUILT_IN_MESSAGE[:HELP]
         return 'へるぷ'
       else
