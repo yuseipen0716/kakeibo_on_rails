@@ -12,13 +12,13 @@ class MessageHandler
       case message
       when BUILT_IN_MESSAGE[:INPUT]
         current_user.update!(talk_mode: :input_mode)
-        return "トークモード: #{current_user.talk_mode}"
+        return "トークモード: #{User.human_attribute_name('talk_mode.input_mode')}"
       when BUILT_IN_MESSAGE[:SHOW]
         current_user.update(talk_mode: :show_mode)
-        return "トークモード: #{current_user.talk_mode}"
+        return "トークモード: #{User.human_attribute_name('talk_mode.show_mode')}"
       when BUILT_IN_MESSAGE[:GROUP]
         current_user.update(talk_mode: :group_mode)
-        return "トークモード: #{current_user.talk_mode}"
+        return "トークモード: #{User.human_attribute_name('talk_mode.group_mode')}"
       when BUILT_IN_MESSAGE[:HELP]
         return 'へるぷ'
       else

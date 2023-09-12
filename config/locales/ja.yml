@@ -1,0 +1,9 @@
+ja:
+  activerecord:
+    attributes:
+      user:
+      user/talk_mode:
+        default_mode: 'デフォルト'
+        input_mode: '入力'
+        show_mode: '確認'
+        group_mode: 'グループ'
