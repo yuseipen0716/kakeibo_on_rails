@@ -24,9 +24,9 @@ class User < ApplicationRecord
   has_many :expense_records
 
   enum talk_mode: {
-    default: 0,
-    input: 1,
-    show: 2,
-    group: 3
+    default_mode: 0,
+    input_mode: 1,
+    show_mode: 2,
+    group_mode: 3
   }
 end
