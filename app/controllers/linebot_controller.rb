@@ -16,8 +16,13 @@ class LinebotController < ApplicationController
     # 一旦message eventのみ対応。
     events.each do |event|
       if event.is_a?(Line::Bot::Event::Message)
-        parsed_message = MessageParser.parse(event.message['text'])
-        reply_text = MessageHandler.perform(parsed_message)
+        user_id = event['source']['userId']
+        if is_new_user?(user_id)
+          user_name = get_user_name(user_id)
+          CreateUserUsecase.perform(user_id, user_name)
+        end
+
+        reply_text = MessageHandler.perform(event.message['text'])
 
         message = {
           type: 'text',
@@ -36,6 +41,22 @@ class LinebotController < ApplicationController
     @client ||= Line::Bot::Client.new do |config|
       config.channel_secret = ENV['LINE_CHANNEL_SECRET']
       config.channel_token = ENV['LINE_CHANNEL_TOKEN']
+    end
+  end
+
+  def is_new_user?(user_id)
+    !User.find_by(line_id: user_id)
+  end
+
+  def get_user_name(user_id)
+    response = client.get_profile(user_id)
+
+    if response.is_a?(Net::HTTPSuccess)
+      JSON.parse(response.body)['displayName']
+    else
+      Rails.logger.error("Failed to fetch user name for user_id: #{user_id}. Response: #{response.body}")
+      'Unknown User'
+      return
     end
   end
 end
