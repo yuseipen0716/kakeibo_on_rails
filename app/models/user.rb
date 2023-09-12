@@ -19,6 +19,6 @@
 #  group_id  (group_id => groups.id)
 #
 class User < ApplicationRecord
-  belongs_to :group
+  belongs_to :group, optional: true
   has_many :expense_records
 end
