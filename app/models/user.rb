@@ -6,12 +6,13 @@
 #  name       :text             not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  group_id   :integer          not null
+#  group_id   :integer
 #  line_id    :text
 #
 # Indexes
 #
 #  index_users_on_group_id  (group_id)
+#  index_users_on_line_id   (line_id) UNIQUE
 #
 # Foreign Keys
 #

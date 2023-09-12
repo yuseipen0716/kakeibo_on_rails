@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_03_173317) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_12_131941) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -37,12 +37,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_03_173317) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.integer "group_id", null: false
+    t.integer "group_id"
     t.text "line_id"
     t.text "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_users_on_group_id"
+    t.index ["line_id"], name: "index_users_on_line_id", unique: true
   end
 
   add_foreign_key "expense_records", "categories"
