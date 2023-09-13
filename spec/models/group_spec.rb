@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Group, type: :model do
   describe 'validation of name' do
-    let(:group) { Group.new(name: name) }
+    let(:group) { Group.new(name:) }
     context 'name length within 10' do
       let(:name) { '1234567890' }
 

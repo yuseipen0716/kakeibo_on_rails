@@ -2,3 +2,7 @@ Style/Documentation:
   Enabled: false
 Style/FrozenStringLiteralComment:
   Enabled: false
+AllCops:
+  Exclude:
+    - 'db/schema.rb'
+    - 'lib/tasks/auto_annotate_models.rake'
