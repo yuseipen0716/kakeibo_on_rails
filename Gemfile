@@ -48,6 +48,8 @@ group :development, :test do
 
   gem 'dotenv-rails'
 
+  gem 'rspec-rails'
+
   # rubocop
   gem 'rubocop', require: false
 end
