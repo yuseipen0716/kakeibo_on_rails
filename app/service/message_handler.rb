@@ -72,6 +72,7 @@ class MessageHandler
     def set_help_message
       message = <<~HELP
         【ヘルプ】\n
+        当機能はまだリリース前です。
         これはヘルプメッセージです。
         これはヘルプメッセージです。
       HELP
