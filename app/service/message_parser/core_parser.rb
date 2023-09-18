@@ -2,9 +2,19 @@ module MessageParser
   class CoreParser
     class << self
       # messageを受け取り、parsed_messageを返す。
-      def handle_parser(message, message_type)
+      # params: message:string, message_type:Symbol :input | :show | :group
+      def handle_parser(message:, message_type:, user:)
         # 使用するParserをhandle
-        "message.split('\n'): #{message.split("\n")}, message_type: #{message_type}"
+        case message_type
+        when :input
+          MessageParser::InputMessageParser.perform(message: message, user: user)
+        when :show
+          'MessageParser::ShowMessageParser'
+        when :group
+          'MessageParser::GroupMessageParser'
+        else
+          'other message'
+        end
       end
     end
   end

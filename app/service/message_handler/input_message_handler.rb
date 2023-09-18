@@ -25,8 +25,12 @@ module MessageHandler
       end
       # rubocop:enable Metrics/MethodLength
 
-      def perform(message)
-        MessageParser::CoreParser.handle_parser(message, MESSAGE_TYPE)
+      def perform(user, message)
+        MessageParser::CoreParser.handle_parser(
+          message: message,
+          message_type: MESSAGE_TYPE,
+          user: user
+        )
       end
     end
   end
