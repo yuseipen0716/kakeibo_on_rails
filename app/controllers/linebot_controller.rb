@@ -22,7 +22,7 @@ class LinebotController < ApplicationController
         CreateUserUsecase.perform(line_id, user_name)
       end
 
-      reply_text = MessageHandler.perform(event.message['text'], line_id)
+      reply_text = MessageHandler::CoreHandler.perform(event.message['text'], line_id)
 
       message = {
         type: 'text',
