@@ -19,7 +19,7 @@ module MessageHandler
         when BUILT_IN_MESSAGE[:GROUP]
           current_user.update(talk_mode: :group_mode) && set_group_mode_message
         when BUILT_IN_MESSAGE[:HELP]
-          set_help_message
+          set_help_message(current_user.talk_mode.to_sym)
         else
           handle_other_message(current_user, message)
         end
@@ -48,15 +48,23 @@ module MessageHandler
         message.chomp
       end
   
-      def set_help_message
-        message = <<~HELP
-          【ヘルプ】\n
-          当機能はまだリリース前です。
-          これはヘルプメッセージです。
-          これはヘルプメッセージです。
-        HELP
-  
-        message.chomp
+      def set_help_message(talk_mode)
+        case talk_mode
+        when :default_mode
+          message = <<~HELP
+            【ヘルプ】\n
+            当機能はまだリリース前です。
+            これはヘルプメッセージです。
+            これはヘルプメッセージです。
+          HELP
+          message.chomp
+        when :input_mode
+          MessageHandler::InputMessageHandler.set_input_first_message
+        when :show_mode
+          '確認モードのヘルプメッセージ'
+        when :group_mode
+          'グループモードのヘルプメッセージ'
+        end
       end
   
       def handle_other_message(user, message)
