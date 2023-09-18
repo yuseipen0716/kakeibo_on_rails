@@ -13,7 +13,7 @@ module MessageHandler
         current_user = User.find_by(line_id:)
         case message
         when BUILT_IN_MESSAGE[:INPUT]
-          current_user.update!(talk_mode: :input_mode) && set_input_mode_message
+          current_user.update!(talk_mode: :input_mode) && MessageHandler::InputMessageHandler.set_input_first_message
         when BUILT_IN_MESSAGE[:SHOW]
           current_user.update(talk_mode: :show_mode) && set_show_mode_message
         when BUILT_IN_MESSAGE[:GROUP]
@@ -27,29 +27,7 @@ module MessageHandler
       # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
   
       private
-  
-      # rubocop:disable Metrics/MethodLength
-      def set_input_mode_message
-        message = "トークモード: #{User.human_attribute_name('talk_mode.input_mode')}\n"
-        message << "---------------------------------\n"
-        first_message = <<~INPUT
-          家計簿データを入力する場合は、
-  
-          費目
-          金額（半角数字）
-          備考（任意）
-  
-          の形で入力してください。
-          金額部分には「円」などの表記は不要です。
-  
-          誤って入力してしまった場合\n「とりけし」と入力することで、直前の家計簿データを削除することができます。
-        INPUT
-        message << first_message
-  
-        message.chomp
-      end
-      # rubocop:enable Metrics/MethodLength
-  
+
       def set_show_mode_message
         message = "トークモード: #{User.human_attribute_name('talk_mode.show_mode')}\n"
         message << "---------------------------------\n"
@@ -84,7 +62,7 @@ module MessageHandler
       def handle_other_message(user, message)
         case user.talk_mode.to_sym
         when :input_mode
-          'handle_other_input'
+          MessageHandler::InputMessageHandler.perform(message)
         when :show_mode
           'handle_other_show'
         when :group_mode
