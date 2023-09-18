@@ -9,4 +9,6 @@
 #
 class Category < ApplicationRecord
   has_many :expense_records
+
+  validates :name, presence: true, length: { maximum: 10 }
 end
