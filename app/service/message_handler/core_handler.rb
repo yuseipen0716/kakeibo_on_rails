@@ -13,13 +13,13 @@ module MessageHandler
         current_user = User.find_by(line_id:)
         case message
         when BUILT_IN_MESSAGE[:INPUT]
-          current_user.update!(talk_mode: :input_mode) && MessageHandler::InputMessageHandler.set_input_first_message
+          current_user.update(talk_mode: :input_mode) && MessageHandler::InputMessageHandler.set_input_first_message
         when BUILT_IN_MESSAGE[:SHOW]
           current_user.update(talk_mode: :show_mode) && set_show_mode_message
         when BUILT_IN_MESSAGE[:GROUP]
           current_user.update(talk_mode: :group_mode) && set_group_mode_message
         when BUILT_IN_MESSAGE[:HELP]
-          set_help_message(current_user.talk_mode.to_sym)
+          current_user.update(talk_mode: :default_mode) && set_help_message(current_user.talk_mode.to_sym)
         else
           handle_other_message(current_user, message)
         end
