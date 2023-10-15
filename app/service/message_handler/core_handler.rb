@@ -69,7 +69,7 @@ module MessageHandler
   
       def handle_other_message(user, message)
         case user.talk_mode.to_sym
-        when :input_mode
+        when :input_mode, :expense_input_mode, :income_input_mode
           MessageHandler::InputMessageHandler.perform(user, message)
         when :show_mode
           'handle_other_show'
