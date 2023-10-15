@@ -27,6 +27,8 @@ class User < ApplicationRecord
     default_mode: 0,
     input_mode: 1,
     show_mode: 2,
-    group_mode: 3
+    group_mode: 3,
+    expense_input_mode: 4,
+    income_input_mode: 5
   }
 end
