@@ -7,3 +7,5 @@ ja:
         input_mode: '入力'
         show_mode: '確認'
         group_mode: 'グループ'
+        expense_input_mode: '支出入力'
+        income_input_mode: '収入入力'
