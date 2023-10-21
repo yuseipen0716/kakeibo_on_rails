@@ -53,7 +53,7 @@ module MessageParser
         return generate_error_message(check_result_messages) unless check_result_messages.empty?
 
         # 家計簿データの入力処理を行い、その結果をメッセージで返す。
-        "家計簿データの登録を始めます。type: #{expense_type}\n入力されたデータ: 費目→#{parsed_message_hash[:category]} 金額 → #{parsed_message_hash[:amount]} 備考 → #{parsed_message_hash[:memorandum]} 日付 → #{parsed_message_hash[:transaction_date]}\nトークモード: #{User.human_attribute_name("talk_mode.#{user.talk_mode}")}" # test_message
+        CreateExpenseRecordUsecase.perform(expense_record_attrs: parsed_message_hash, expense_type: expense_type, user:)
       end
 
       def request_expense_or_income_data(talk_mode)
