@@ -3,10 +3,10 @@ class CreateExpenseRecordUsecase
     def perform(expense_record_attrs:, expense_type:, user:)
       ActiveRecord::Base.transaction do
         record = user.expense_records.new
-  
+
         # Categoryモデルにない費目だったら、新規作成
         category = Category.find_or_create_by(name: expense_record_attrs[:category])
-  
+
         expense_record_attrs.delete(:category)
         expense_record_attrs[:expense_type] = expense_type
         expense_record_attrs[:category_id] = category.id
@@ -26,7 +26,8 @@ class CreateExpenseRecordUsecase
 
           response_message.chomp
         rescue ActiveRecord::RecordInvalid => e
-          record.errors.full_messages.join("\n")
+          e.message
+          # record.errors.full_messages.join("\n")
         end
       end
     end

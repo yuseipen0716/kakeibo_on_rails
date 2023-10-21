@@ -10,11 +10,11 @@ module MessageParser
 
         case current_talk_mode
         when :input_mode
-          perform_input_mode(message: message, user: user)
+          perform_input_mode(message:, user:)
         when :expense_input_mode
-          perform_expense_or_income(message: message, user: user)
+          perform_expense_or_income(message:, user:)
         when :income_input_mode
-          perform_expense_or_income(message: message, user: user)
+          perform_expense_or_income(message:, user:)
         end
       end
 
@@ -40,7 +40,7 @@ module MessageParser
 
         # 受け取ったメッセージが「支出」でも「収入」でもなかった場合
         user.update(talk_mode: :default_mode)
-        return "メッセージの形式が正しくありません。\nもう一度最初から操作を行ってください。"
+        "メッセージの形式が正しくありません。\nもう一度最初から操作を行ってください。"
       end
 
       def perform_expense_or_income(message:, user:)
@@ -53,7 +53,7 @@ module MessageParser
         return generate_error_message(check_result_messages) unless check_result_messages.empty?
 
         # 家計簿データの入力処理を行い、その結果をメッセージで返す。
-        CreateExpenseRecordUsecase.perform(expense_record_attrs: parsed_message_hash, expense_type: expense_type, user:)
+        CreateExpenseRecordUsecase.perform(expense_record_attrs: parsed_message_hash, expense_type:, user:)
       end
 
       def request_expense_or_income_data(talk_mode)
@@ -84,7 +84,7 @@ module MessageParser
       end
 
       def generate_error_message(error_messages)
-        error_message = error_messages.join("\n") + "\n\n"
+        error_message = "#{error_messages.join("\n")}\n\n"
         input_example = <<~EXAMPLE
           入力例
           ---------------------------------
@@ -108,7 +108,7 @@ module MessageParser
         error_messages << '金額の入力は必須です。' if message_hash[:amount].empty?
         error_messages << '費目は10文字以内で設定してください。' if message_hash[:category].length > 10
         error_messages << '金額は半角数字で入力してください。円などの単位も不要です。' unless message_hash[:amount].empty? || message_hash[:amount].match?(/\A\d+\z/)
-        error_messages << '入力された日付の値が不正です。' unless is_date?(message_hash[:transaction_date])
+        error_messages << '入力された日付の値が不正です。' unless date?(message_hash[:transaction_date])
         error_messages
       end
 
@@ -125,7 +125,7 @@ module MessageParser
         str&.gsub(/[‐－–—]/, '-')
       end
 
-      def is_date?(str)
+      def date?(str)
         # 基本的には2023-09-09のようなフォーマットでとりたいが、20230909の表記ゆれは許容する
         str.match?(/\A\d{4}-\d{2}-\d{2}\z/) || str.match?(/\A\d{8}\z/)
       end
@@ -145,7 +145,7 @@ module MessageParser
         transaction_date = normalize_dash(lines[3])
 
         if lines.length == 3
-          if is_date?(normalize_dash(lines[2]))
+          if date?(normalize_dash(lines[2]))
             # messageの3行目が日付のデータであった場合
             memorandum = ''
             transaction_date = normalize_dash(lines[2])

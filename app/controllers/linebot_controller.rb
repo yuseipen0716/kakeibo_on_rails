@@ -1,7 +1,6 @@
 class LinebotController < ApplicationController
   require 'line/bot'
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def callback
     body = request.body.read
     signature = request.env['HTTP_X_LINE_SIGNATURE']
@@ -33,7 +32,7 @@ class LinebotController < ApplicationController
 
     head :ok
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:enable Metrics/AbcSize
 
   private
 

@@ -7,7 +7,7 @@ module MessageParser
         # 使用するParserをhandle
         case message_type
         when :input
-          MessageParser::InputMessageParser.perform(message: message, user: user)
+          MessageParser::InputMessageParser.perform(message:, user:)
         when :show
           'MessageParser::ShowMessageParser'
         when :group

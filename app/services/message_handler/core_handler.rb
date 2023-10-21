@@ -8,27 +8,27 @@ module MessageHandler
     }.freeze
     class << self
       # messageを受け取り、適切な処理に振り分け、replyを返す
-      # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/CyclomaticComplexity
       def perform(message, line_id)
         current_user = User.find_by(line_id:)
         case message
         when BUILT_IN_MESSAGE[:INPUT]
-          current_user.update(talk_mode: :input_mode) && MessageHandler::InputMessageHandler.set_input_first_message
+          current_user.update(talk_mode: :input_mode) && MessageHandler::InputMessageHandler.input_first_message
         when BUILT_IN_MESSAGE[:SHOW]
-          current_user.update(talk_mode: :show_mode) && set_show_mode_message
+          current_user.update(talk_mode: :show_mode) && show_mode_message
         when BUILT_IN_MESSAGE[:GROUP]
-          current_user.update(talk_mode: :group_mode) && set_group_mode_message
+          current_user.update(talk_mode: :group_mode) && group_mode_message
         when BUILT_IN_MESSAGE[:HELP]
-          current_user.update(talk_mode: :default_mode) && set_help_message(current_user.talk_mode.to_sym)
+          current_user.update(talk_mode: :default_mode) && help_message(current_user.talk_mode.to_sym)
         else
           handle_other_message(current_user, message)
         end
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
-  
+      # rubocop:enable Metrics/CyclomaticComplexity
+
       private
 
-      def set_show_mode_message
+      def show_mode_message
         message = "トークモード: #{User.human_attribute_name('talk_mode.show_mode')}\n"
         message << "---------------------------------\n"
         first_message = <<~SHOW
@@ -36,19 +36,19 @@ module MessageHandler
           もうしばらくお待ちください。
         SHOW
         message << first_message
-  
+
         message.chomp
       end
-  
-      def set_group_mode_message
+
+      def group_mode_message
         message = "トークモード: #{User.human_attribute_name('talk_mode.group_mode')}\n"
         message << "--------------------------------------\n"
         message << "グループを新しく作成する場合は「作成」と入力してください。\nグループに参加する場合は「参加」と入力してください。\n"
-  
+
         message.chomp
       end
-  
-      def set_help_message(talk_mode)
+
+      def help_message(talk_mode)
         case talk_mode
         when :default_mode
           message = <<~HELP
@@ -59,14 +59,14 @@ module MessageHandler
           HELP
           message.chomp
         when :input_mode
-          MessageHandler::InputMessageHandler.set_input_first_message
+          MessageHandler::InputMessageHandler.input_first_message
         when :show_mode
           '確認モードのヘルプメッセージ'
         when :group_mode
           'グループモードのヘルプメッセージ'
         end
       end
-  
+
       def handle_other_message(user, message)
         case user.talk_mode.to_sym
         when :input_mode, :expense_input_mode, :income_input_mode

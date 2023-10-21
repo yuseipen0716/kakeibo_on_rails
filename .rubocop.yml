@@ -4,5 +4,33 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 AllCops:
   Exclude:
-    - 'db/schema.rb'
+    - "bin/**/*"
+    - "db/**/*"
+    - "tmp/**/*"
     - 'lib/tasks/auto_annotate_models.rake'
+Style/ModuleFunction:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/PredicateName:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 70
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
