@@ -26,7 +26,7 @@ class ExpenseRecord < ApplicationRecord
   belongs_to :user
   belongs_to :category
 
-  enum type: {
+  enum expense_type: {
     expense: 0,
     income: 1
   }
