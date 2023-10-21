@@ -4,7 +4,7 @@
 #
 #  id               :integer          not null, primary key
 #  amount           :integer          not null
-#  expense_type     :integer          default(0), not null
+#  expense_type     :integer          default("expense"), not null
 #  memorandum       :text
 #  transaction_date :datetime         not null
 #  created_at       :datetime         not null

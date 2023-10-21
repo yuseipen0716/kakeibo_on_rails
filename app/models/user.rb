@@ -4,7 +4,7 @@
 #
 #  id         :integer          not null, primary key
 #  name       :text             not null
-#  talk_mode  :integer          default(0), not null
+#  talk_mode  :integer          default("default_mode"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  group_id   :integer
