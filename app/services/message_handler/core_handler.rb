@@ -2,6 +2,8 @@ module MessageHandler
   class CoreHandler
     BUILT_IN_MESSAGE = {
       INPUT: '家計簿データ入力',
+      EXPENSE_INPUT: '支出データ入力',
+      INCOME_INPUT: '収入データ入力',
       SHOW: '家計簿データ確認',
       GROUP: 'グループ作成・参加',
       HELP: 'ヘルプ'
@@ -14,6 +16,10 @@ module MessageHandler
         case message
         when BUILT_IN_MESSAGE[:INPUT]
           current_user.update(talk_mode: :input_mode) && MessageHandler::InputMessageHandler.input_first_message
+        when BUILT_IN_MESSAGE[:EXPENSE_INPUT]
+          current_user.update(talk_mode: :expense_input_mode) && MessageHandler::InputMessageHandler.expense_input_first_message
+        when BUILT_IN_MESSAGE[:INCOME_INPUT]
+          current_user.update(talk_mode: :income_input_mode) && MessageHandler::InputMessageHandler.income_input_first_message
         when BUILT_IN_MESSAGE[:SHOW]
           current_user.update(talk_mode: :show_mode) && show_mode_message
         when BUILT_IN_MESSAGE[:GROUP]
