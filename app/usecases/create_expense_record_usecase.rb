@@ -22,7 +22,7 @@ class CreateExpenseRecordUsecase
             費目: #{record.category.name}
             金額: #{record.amount}
             備考: #{record.memorandum.present? ? record.memorandum : ''}
-            日付: #{record.transaction_date}
+            日付: #{record.transaction_date.to_date}
 
             #{expense_type == :expense ? '支出' : '収入'}データを続けて入力する場合は、このまま続けて入力できます。
 
