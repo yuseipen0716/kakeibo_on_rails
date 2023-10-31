@@ -15,6 +15,7 @@ class CreateExpenseRecordUsecase
 
         begin
           record.save!
+
           response_message = <<~MESSAGE
             #{expense_type == :expense ? '支出' : '収入'}データの登録に成功しました💡
 
@@ -22,6 +23,10 @@ class CreateExpenseRecordUsecase
             金額: #{record.amount}
             備考: #{record.memorandum.present? ? record.memorandum : ''}
             日付: #{record.transaction_date}
+
+            #{expense_type == :expense ? '支出' : '収入'}データを続けて入力する場合は、このまま続けて入力できます。
+
+            #{expense_type == :expense ? '収入' : '支出'}データを入力する場合は、#{expense_type == :expense ? '収入' : '支出'}データ入力のメニューをタップしてください。
           MESSAGE
 
           response_message.chomp
