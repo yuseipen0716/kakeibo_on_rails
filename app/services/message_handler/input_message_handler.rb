@@ -38,6 +38,44 @@ module MessageHandler
 
         message.chomp
       end
+
+      def expense_input_first_message
+        message = "トークモード: #{User.human_attribute_name('talk_mode.expense_input_mode')}\n"
+        message << "---------------------------------\n"
+        first_message = <<~INPUT
+          支出データを入力する場合は、
+
+          費目
+          金額（半角数字）
+          備考（任意）
+          日付 (任意 例: 2023-08-08)
+
+          の形で入力してください。
+          金額部分には「円」などの表記は不要です。
+        INPUT
+        message << first_message
+
+        message.chomp
+      end
+
+      def income_input_first_message
+        message = "トークモード: #{User.human_attribute_name('talk_mode.income_input_mode')}\n"
+        message << "---------------------------------\n"
+        first_message = <<~INPUT
+          収入データを入力する場合は、
+
+          費目
+          金額（半角数字）
+          備考（任意）
+          日付 (任意 例: 2023-08-08)
+
+          の形で入力してください。
+          金額部分には「円」などの表記は不要です。
+        INPUT
+        message << first_message
+
+        message.chomp
+      end
     end
   end
 end

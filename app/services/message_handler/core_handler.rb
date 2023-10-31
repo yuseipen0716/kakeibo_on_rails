@@ -2,18 +2,24 @@ module MessageHandler
   class CoreHandler
     BUILT_IN_MESSAGE = {
       INPUT: '家計簿データ入力',
+      EXPENSE_INPUT: '支出データ入力',
+      INCOME_INPUT: '収入データ入力',
       SHOW: '家計簿データ確認',
       GROUP: 'グループ作成・参加',
       HELP: 'ヘルプ'
     }.freeze
     class << self
       # messageを受け取り、適切な処理に振り分け、replyを返す
-      # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def perform(message, line_id)
         current_user = User.find_by(line_id:)
         case message
         when BUILT_IN_MESSAGE[:INPUT]
           current_user.update(talk_mode: :input_mode) && MessageHandler::InputMessageHandler.input_first_message
+        when BUILT_IN_MESSAGE[:EXPENSE_INPUT]
+          current_user.update(talk_mode: :expense_input_mode) && MessageHandler::InputMessageHandler.expense_input_first_message
+        when BUILT_IN_MESSAGE[:INCOME_INPUT]
+          current_user.update(talk_mode: :income_input_mode) && MessageHandler::InputMessageHandler.income_input_first_message
         when BUILT_IN_MESSAGE[:SHOW]
           current_user.update(talk_mode: :show_mode) && show_mode_message
         when BUILT_IN_MESSAGE[:GROUP]
@@ -24,7 +30,7 @@ module MessageHandler
           handle_other_message(current_user, message)
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       private
 
