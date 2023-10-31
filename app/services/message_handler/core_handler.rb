@@ -10,7 +10,7 @@ module MessageHandler
     }.freeze
     class << self
       # messageを受け取り、適切な処理に振り分け、replyを返す
-      # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def perform(message, line_id)
         current_user = User.find_by(line_id:)
         case message
@@ -30,7 +30,7 @@ module MessageHandler
           handle_other_message(current_user, message)
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       private
 
