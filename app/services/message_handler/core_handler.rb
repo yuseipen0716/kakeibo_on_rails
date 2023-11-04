@@ -21,7 +21,7 @@ module MessageHandler
         when BUILT_IN_MESSAGE[:INCOME_INPUT]
           current_user.update(talk_mode: :income_input_mode) && MessageHandler::InputMessageHandler.income_input_first_message
         when BUILT_IN_MESSAGE[:SHOW]
-          current_user.update(talk_mode: :show_mode) && show_mode_message
+          current_user.update(talk_mode: :show_mode) && MessageHandler::ShowMessageHandler.show_first_message
         when BUILT_IN_MESSAGE[:GROUP]
           current_user.update(talk_mode: :group_mode) && group_mode_message
         when BUILT_IN_MESSAGE[:HELP]
@@ -34,17 +34,17 @@ module MessageHandler
 
       private
 
-      def show_mode_message
-        message = "トークモード: #{User.human_attribute_name('talk_mode.show_mode')}\n"
-        message << "---------------------------------\n"
-        first_message = <<~SHOW
-          当機能はまだリリース前です。
-          もうしばらくお待ちください。
-        SHOW
-        message << first_message
+      # def show_mode_message
+      #   message = "トークモード: #{User.human_attribute_name('talk_mode.show_mode')}\n"
+      #   message << "---------------------------------\n"
+      #   first_message = <<~SHOW
+      #     当機能はまだリリース前です。
+      #     もうしばらくお待ちください。
+      #   SHOW
+      #   message << first_message
 
-        message.chomp
-      end
+      #   message.chomp
+      # end
 
       def group_mode_message
         message = "トークモード: #{User.human_attribute_name('talk_mode.group_mode')}\n"
@@ -78,7 +78,7 @@ module MessageHandler
         when :input_mode, :expense_input_mode, :income_input_mode
           MessageHandler::InputMessageHandler.perform(user, message)
         when :show_mode
-          'handle_other_show'
+          MessageHandler::ShowMessageHandler.perform(user, message)
         when :group_mode
           'handle_other_group'
         else
