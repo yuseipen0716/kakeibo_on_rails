@@ -14,7 +14,7 @@ module MessageParser
       # 今月の家計簿データの合計
       # <確認したい月の指定>\n費目（未指定、または合計の場合は当該月の合計を返す）
       # params: message: String <"Month\nCategory">, user: User
-      # month => '今月'または'2023-10'のような指定を要求。
+      # month => '今月', '先月'または'2023-10'のような指定を要求。
       # category => Categoryとして保存されているもの。指定したcategoryが存在しない場合は、
       # 費目が見つからなかった旨のメッセージ返す。
       def perform_monthly_total(message:, user:)
