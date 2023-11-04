@@ -9,7 +9,7 @@ module MessageParser
         when :input
           MessageParser::InputMessageParser.perform(message:, user:)
         when :show
-          'MessageParser::ShowMessageParser'
+          MessageParser::ShowMessageParser.perform(message:, user:)
         when :group
           'MessageParser::GroupMessageParser'
         else
