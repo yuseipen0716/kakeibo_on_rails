@@ -30,4 +30,7 @@ class ExpenseRecord < ApplicationRecord
     expense: 0,
     income: 1
   }
+
+  scope :expense, -> { where(expense_type: :expense) }
+  scope :income, -> { where(expense_type: :income) }
 end
