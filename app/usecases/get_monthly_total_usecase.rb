@@ -2,7 +2,7 @@ class GetMonthlyTotalUsecase
   class << self
     def perform(user:, period:, category: nil)
       # group機能は未実装なため、一旦user自体の家計簿データの合計を返す。
-      total = if category && category != '合計'
+      total = if category
                 ExpenseRecord.eager_load(:category)
                              .expense
                              .where(user:, transaction_date: period)
