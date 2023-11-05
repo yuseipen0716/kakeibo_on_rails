@@ -91,7 +91,7 @@ module MessageParser
 
       def category_not_found?(category)
         # 期間のみ入力されて費目の指定がない場合、費目の部分に合計と書かれた場合は除外
-        (category || category != '合計') && !Category.find_by(name: category)
+        category && category != '合計' && !Category.find_by(name: category)
       end
 
       def category_not_found_message
