@@ -23,7 +23,7 @@ module MessageParser
         category = lines[1]
 
         return error_message(ERROR_TYPE[:MONTH]) unless month_specification_valid?(lines.first)
-        return error_message(ERROR_TYPE[:CATEGORY]) if category && !Category.find_by(name: category)
+        return error_message(ERROR_TYPE[:CATEGORY]) if category_not_found?(category)
 
         # '月の合計を返す'
         GetMonthlyTotalUsecase.perform(user:, period:, category:)
@@ -87,6 +87,11 @@ module MessageParser
         ERROR
 
         error_message.chomp
+      end
+
+      def category_not_found?(category)
+        # 期間のみ入力されて費目の指定がない場合、費目の部分に合計と書かれた場合は除外
+        category && category != '合計' && !Category.find_by(name: category)
       end
 
       def category_not_found_message
