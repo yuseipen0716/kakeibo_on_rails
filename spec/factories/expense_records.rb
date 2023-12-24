@@ -22,3 +22,12 @@
 #  category_id  (category_id => categories.id)
 #  user_id      (user_id => users.id)
 #
+FactoryBot.define do
+  factory :expense_record do
+    amount { 1500 }
+    expense_type { :expense }
+    transaction_date { Time.zone.now }
+    category { create(:category) }
+    user { create(:user) }
+  end
+end
