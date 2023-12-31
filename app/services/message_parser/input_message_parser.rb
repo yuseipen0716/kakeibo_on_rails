@@ -11,7 +11,7 @@ module MessageParser
         case current_talk_mode
         when :input_mode
           perform_input_mode(message:, user:)
-        when :expense_input_mode
+        when :expense_input_mode # [TODO]呼び出すメソッドが同じなので、caseまとめていいかも。
           perform_expense_or_income(message:, user:)
         when :income_input_mode
           perform_expense_or_income(message:, user:)
