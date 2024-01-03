@@ -8,6 +8,7 @@ module MessageParser
     class << self
       def perform(message:, user:)
         # 一旦、今月の合計（総計または費目指定）を返す機能のみ実装する。
+        # [TODO] 今後はこの部分はUsecaseに切り出したい。
         perform_monthly_total(message:, user:)
       end
 
