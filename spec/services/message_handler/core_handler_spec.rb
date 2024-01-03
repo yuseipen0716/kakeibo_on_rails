@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe MessageHandler::CoreHandler do
   describe 'perform' do
-    let(:usecase) { described_class.perform(message, line_id) }
+    let(:result) { described_class.perform(message, line_id) }
     let(:user) { create(:user, line_id:) }
     let(:line_id) { '1234567890' }
 
@@ -22,7 +22,7 @@ RSpec.describe MessageHandler::CoreHandler do
       end
 
       it 'return input_first_message' do
-        expect(usecase).to eq(response_message.chomp)
+        expect(result).to eq(response_message.chomp)
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe MessageHandler::CoreHandler do
       end
 
       it 'return expense_input_first_message' do
-        expect(usecase).to eq(response_message.chomp)
+        expect(result).to eq(response_message.chomp)
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe MessageHandler::CoreHandler do
       end
 
       it 'return income_input_first_message' do
-        expect(usecase).to eq(response_message.chomp)
+        expect(result).to eq(response_message.chomp)
       end
     end
 
@@ -101,7 +101,7 @@ RSpec.describe MessageHandler::CoreHandler do
       end
 
       it 'return show_first_message' do
-        expect(usecase).to eq(response_message.chomp)
+        expect(result).to eq(response_message.chomp)
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe MessageHandler::CoreHandler do
       end
 
       it 'return group_first_message' do
-        expect(usecase).to eq(response_message.chomp)
+        expect(result).to eq(response_message.chomp)
       end
     end
 
@@ -137,7 +137,7 @@ RSpec.describe MessageHandler::CoreHandler do
       end
 
       it 'return help_message' do
-        expect(usecase).to eq(response_message.chomp)
+        expect(result).to eq(response_message.chomp)
       end
     end
   end

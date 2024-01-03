@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe MessageParser::InputMessageParser do
   describe 'perform' do
-    let(:usecase) { described_class.perform(message:, user:) }
+    let(:result) { described_class.perform(message:, user:) }
     let(:user) { create(:user, talk_mode:) }
 
     context 'when user.talk_mode is input_mode' do
@@ -34,7 +34,7 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'returns expense_input description' do
-          expect(usecase).to eq(response_message.chomp)
+          expect(result).to eq(response_message.chomp)
         end
       end
 
@@ -64,7 +64,7 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'returns income_input description' do
-          expect(usecase).to eq(response_message.chomp)
+          expect(result).to eq(response_message.chomp)
         end
       end
 
@@ -73,11 +73,11 @@ RSpec.describe MessageParser::InputMessageParser do
         let(:response_message) { "メッセージの形式が正しくありません。\nもう一度最初から操作を行ってください。" }
 
         it 'returns error message' do
-          expect(usecase).to eq(response_message)
+          expect(result).to eq(response_message)
         end
 
         it 'is changed talk_mode into default_mode' do
-          usecase
+          result
           expect(user.talk_mode.to_sym).to eq(:default_mode)
         end
       end
@@ -104,7 +104,7 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'succeeds in creating expense_record' do
-          expect(usecase).to eq(response_message.chomp)
+          expect(result).to eq(response_message.chomp)
         end
       end
 
@@ -126,7 +126,7 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'succeeds in creating expense_record' do
-          expect(usecase).to eq(response_message.chomp)
+          expect(result).to eq(response_message.chomp)
         end
       end
 
@@ -148,7 +148,7 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'succeeds in creating expense_record' do
-          expect(usecase).to eq(response_message.chomp)
+          expect(result).to eq(response_message.chomp)
         end
       end
 
@@ -157,7 +157,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { '' }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('費目の入力は必須です。')
+            expect(result).to include('費目の入力は必須です。')
           end
         end
 
@@ -165,7 +165,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { '食費' }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('金額の入力は必須です。')
+            expect(result).to include('金額の入力は必須です。')
           end
         end
 
@@ -173,7 +173,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { '12345678901' }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('費目は10文字以内で設定してください。')
+            expect(result).to include('費目は10文字以内で設定してください。')
           end
         end
 
@@ -181,7 +181,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { "食費\n１０００" }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('金額は半角数字で入力してください。円などの単位も不要です。')
+            expect(result).to include('金額は半角数字で入力してください。円などの単位も不要です。')
           end
         end
 
@@ -189,7 +189,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { "食費\n1000円" }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('金額は半角数字で入力してください。円などの単位も不要です。')
+            expect(result).to include('金額は半角数字で入力してください。円などの単位も不要です。')
           end
         end
 
@@ -197,7 +197,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { "食費\n1000\nラーメン\nnot_date" }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('入力された日付の値が不正です。')
+            expect(result).to include('入力された日付の値が不正です。')
           end
         end
       end
@@ -224,7 +224,7 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'succeeds in creating expense_record' do
-          expect(usecase).to eq(response_message.chomp)
+          expect(result).to eq(response_message.chomp)
         end
       end
 
@@ -246,7 +246,7 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'succeeds in creating expense_record' do
-          expect(usecase).to eq(response_message.chomp)
+          expect(result).to eq(response_message.chomp)
         end
       end
 
@@ -268,7 +268,7 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'succeeds in creating expense_record' do
-          expect(usecase).to eq(response_message.chomp)
+          expect(result).to eq(response_message.chomp)
         end
       end
 
@@ -277,7 +277,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { '' }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('費目の入力は必須です。')
+            expect(result).to include('費目の入力は必須です。')
           end
         end
 
@@ -285,7 +285,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { '給与' }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('金額の入力は必須です。')
+            expect(result).to include('金額の入力は必須です。')
           end
         end
 
@@ -293,7 +293,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { '12345678901' }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('費目は10文字以内で設定してください。')
+            expect(result).to include('費目は10文字以内で設定してください。')
           end
         end
 
@@ -301,7 +301,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { "給与\n２０００００" }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('金額は半角数字で入力してください。円などの単位も不要です。')
+            expect(result).to include('金額は半角数字で入力してください。円などの単位も不要です。')
           end
         end
 
@@ -309,7 +309,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { "給与\n200000円" }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('金額は半角数字で入力してください。円などの単位も不要です。')
+            expect(result).to include('金額は半角数字で入力してください。円などの単位も不要です。')
           end
         end
 
@@ -317,7 +317,7 @@ RSpec.describe MessageParser::InputMessageParser do
           let(:message) { "給与\n200000\n12月給与\nnot_date" }
 
           it 'fails to create a expense record' do
-            expect(usecase).to include('入力された日付の値が不正です。')
+            expect(result).to include('入力された日付の値が不正です。')
           end
         end
       end
