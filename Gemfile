@@ -46,9 +46,13 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mingw x64_mingw]
 
+  gem 'pry-rails'
+
   gem 'dotenv-rails'
 
   gem 'rspec-rails'
+
+  gem 'factory_bot_rails'
 
   # rubocop
   gem 'rubocop', require: false
@@ -57,4 +61,8 @@ end
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+
+  gem 'spring-commands-rspec'
+
+  gem 'ruby-lsp'
 end
