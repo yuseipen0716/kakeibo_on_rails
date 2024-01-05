@@ -31,3 +31,4 @@ services:
     volumes:
       - ./certbot-init/conf:/etc/letsencrypt
       - ./certbot-init/www:/var/www/certbot
+      - ~/.ddnsnow:/root/.ddnsnow
