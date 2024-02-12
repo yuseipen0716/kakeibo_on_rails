@@ -32,6 +32,7 @@ class ExpenseRecord < ApplicationRecord
     income: 1
   }
 
+  scope :active, -> { where(is_disabled: false) }
   scope :expense, -> { where(expense_type: :expense) }
   scope :income, -> { where(expense_type: :income) }
 end
