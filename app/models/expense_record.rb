@@ -5,6 +5,7 @@
 #  id               :integer          not null, primary key
 #  amount           :integer          not null
 #  expense_type     :integer          default("expense"), not null
+#  is_disabled      :boolean          default(FALSE), not null
 #  memorandum       :text
 #  transaction_date :datetime         not null
 #  created_at       :datetime         not null
@@ -31,6 +32,7 @@ class ExpenseRecord < ApplicationRecord
     income: 1
   }
 
+  scope :active, -> { where(is_disabled: false) }
   scope :expense, -> { where(expense_type: :expense) }
   scope :income, -> { where(expense_type: :income) }
 end

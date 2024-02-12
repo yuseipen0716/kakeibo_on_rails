@@ -100,6 +100,8 @@ RSpec.describe MessageParser::InputMessageParser do
             支出データを続けて入力する場合は、このまま続けて入力できます。
 
             収入データを入力する場合は、収入データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -122,6 +124,8 @@ RSpec.describe MessageParser::InputMessageParser do
             支出データを続けて入力する場合は、このまま続けて入力できます。
 
             収入データを入力する場合は、収入データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -144,10 +148,49 @@ RSpec.describe MessageParser::InputMessageParser do
             支出データを続けて入力する場合は、このまま続けて入力できます。
 
             収入データを入力する場合は、収入データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
         it 'succeeds in creating expense_record' do
+          expect(result).to eq(response_message.chomp)
+        end
+      end
+
+      context '入力したデータを取り消す場合' do
+        let(:message) { 'とりけし' }
+        let(:response_message) do
+          <<~MESSAGE
+            以下の家計簿データを取り消しました💡
+
+            費目: 食費
+            金額: 1500
+            備考: memorandum
+            日付: #{Time.zone.now.to_date}
+          MESSAGE
+        end
+
+        before do
+          # 論理削除されていない支出データを準備しておく
+          create(
+            :expense_record,
+            user:,
+            expense_type: :expense,
+            amount: 1500,
+            category: create(:category, name: '食費'),
+            transaction_date: Time.zone.today,
+            memorandum: 'memorandum',
+            is_disabled: false
+          )
+        end
+
+        it '最新の家計簿データが論理削除される' do
+          result
+          expect(user.expense_records.last.is_disabled).to be_truthy
+        end
+
+        it 'とりけし成功のメッセージが返却される' do
           expect(result).to eq(response_message.chomp)
         end
       end
@@ -220,6 +263,8 @@ RSpec.describe MessageParser::InputMessageParser do
             収入データを続けて入力する場合は、このまま続けて入力できます。
 
             支出データを入力する場合は、支出データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -242,6 +287,8 @@ RSpec.describe MessageParser::InputMessageParser do
             収入データを続けて入力する場合は、このまま続けて入力できます。
 
             支出データを入力する場合は、支出データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -264,10 +311,49 @@ RSpec.describe MessageParser::InputMessageParser do
             収入データを続けて入力する場合は、このまま続けて入力できます。
 
             支出データを入力する場合は、支出データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
         it 'succeeds in creating expense_record' do
+          expect(result).to eq(response_message.chomp)
+        end
+      end
+
+      context '入力したデータを取り消す場合' do
+        let(:message) { 'とりけし' }
+        let(:response_message) do
+          <<~MESSAGE
+            以下の家計簿データを取り消しました💡
+
+            費目: 給与
+            金額: 150000
+            備考: memorandum
+            日付: #{Time.zone.now.to_date}
+          MESSAGE
+        end
+
+        before do
+          # 論理削除されていない収入データを準備しておく
+          create(
+            :expense_record,
+            user:,
+            expense_type: :income,
+            amount: 150_000,
+            category: create(:category, name: '給与'),
+            transaction_date: Time.zone.today,
+            memorandum: 'memorandum',
+            is_disabled: false
+          )
+        end
+
+        it '最新の家計簿データが論理削除される' do
+          result
+          expect(user.expense_records.last.is_disabled).to be_truthy
+        end
+
+        it 'とりけし成功のメッセージが返却される' do
           expect(result).to eq(response_message.chomp)
         end
       end

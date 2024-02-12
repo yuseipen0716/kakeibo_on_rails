@@ -22,6 +22,6 @@
 FactoryBot.define do
   factory :user do
     name { 'username' }
-    line_id { 'xxxxxxxxxx' }
+    line_id { SecureRandom.uuid }
   end
 end
