@@ -44,6 +44,9 @@ module MessageParser
       end
 
       def perform_expense_or_income(message:, user:)
+        # とりけし のようなメッセージが出た場合は、直近の家計簿データを論理削除する。
+        return SoftDeleteLatestExpenseRecordUsecase.new(user).perform if CANCEL_WORDS.any? { |cancel_word| message.start_with?(cancel_word) }
+
         expense_type = user.talk_mode.to_sym == :income_input_mode ? :income : :expense
         # parsed_message_hash: { category: category, amount: amount, memorandum: memorandum, transaction_date: transaction_date }
         parsed_message_hash = parse_message(message)
