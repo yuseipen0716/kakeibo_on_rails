@@ -6,13 +6,12 @@ RSpec.describe SoftDeleteLatestExpenseRecordUsecase, type: :usecase do
     let(:user) { create(:user) }
 
     before do
-      create(:expense_record, user: user)
+      create(:expense_record, user:)
     end
 
-    it "最新の家計簿データのis_disabledがtrueになる。" do
+    it '最新の家計簿データのis_disabledがtrueになる。' do
       usecase.perform
       expect(user.expense_records.last.is_disabled).to be_truthy
     end
   end
 end
-

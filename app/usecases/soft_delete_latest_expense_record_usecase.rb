@@ -10,4 +10,3 @@ class SoftDeleteLatestExpenseRecordUsecase
     p @latest_expense_record
   end
 end
-
