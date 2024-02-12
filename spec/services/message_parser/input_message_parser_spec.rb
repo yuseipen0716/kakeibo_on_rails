@@ -100,6 +100,8 @@ RSpec.describe MessageParser::InputMessageParser do
             支出データを続けて入力する場合は、このまま続けて入力できます。
 
             収入データを入力する場合は、収入データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -122,6 +124,8 @@ RSpec.describe MessageParser::InputMessageParser do
             支出データを続けて入力する場合は、このまま続けて入力できます。
 
             収入データを入力する場合は、収入データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -144,6 +148,8 @@ RSpec.describe MessageParser::InputMessageParser do
             支出データを続けて入力する場合は、このまま続けて入力できます。
 
             収入データを入力する場合は、収入データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -220,6 +226,8 @@ RSpec.describe MessageParser::InputMessageParser do
             収入データを続けて入力する場合は、このまま続けて入力できます。
 
             支出データを入力する場合は、支出データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -242,6 +250,8 @@ RSpec.describe MessageParser::InputMessageParser do
             収入データを続けて入力する場合は、このまま続けて入力できます。
 
             支出データを入力する場合は、支出データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
@@ -264,6 +274,8 @@ RSpec.describe MessageParser::InputMessageParser do
             収入データを続けて入力する場合は、このまま続けて入力できます。
 
             支出データを入力する場合は、支出データ入力のメニューをタップしてください。
+
+            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           RESPONSE
         end
 
