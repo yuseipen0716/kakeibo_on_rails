@@ -8,18 +8,15 @@ class GetMonthlyTotalUsecase
 
   def perform
     # group機能は未実装なため、一旦user自体の家計簿データの合計を返す。
-    message = ''
 
     case @category
     when nil
-      message = monthly_total_group_by_category_name
+      monthly_total_group_by_category_name
     when '合計'
-      message = monthly_total
+      monthly_total
     else
-      message = monthly_total_of_the_category
+      monthly_total_of_the_category
     end
-
-    message
   end
 
   private
@@ -58,13 +55,13 @@ class GetMonthlyTotalUsecase
 
     # 返却するメッセージの1行目をここで用意
     # 2行目は空行を出力したいため、空文字の要素を置いておく。
-    head_message = ["#{formatted_year_month}の費目別合計", ""]
+    head_message = ["#{formatted_year_month}の費目別合計", '']
 
     # 先頭に表示するメッセージに、各費目ごとのメッセージの配列を合わせて、join
     (head_message + expense_messages).join("\n")
   end
 
   def formatted_year_month
-    @period.begin.strftime("%Y年%m月")
+    @period.begin.strftime('%Y年%m月')
   end
 end
