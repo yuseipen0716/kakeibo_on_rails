@@ -19,8 +19,18 @@ RSpec.describe GetMonthlyTotalUsecase, type: :usecase do
     context 'categoryが未指定の場合' do
       let(:category_name) { nil }
 
-      it '今月の合計金額が返される' do
-        expect(usecase).to eq('1500円ナリ')
+      before do
+        create(
+          :expense_record,
+          amount: 3800,
+          transaction_date: Time.zone.now,
+          user:,
+          category: create(:category, name: '医療費')
+        )
+      end
+
+      it '今月の費目ごとの合計金額が返される' do
+        expect(usecase).to eq("#{Time.zone.now.strftime('%Y年%m月')}の費目別合計\n\n医療費: 3800円\n食費: 1500円")
       end
     end
 
@@ -28,12 +38,12 @@ RSpec.describe GetMonthlyTotalUsecase, type: :usecase do
       let(:category_name) { '合計' }
 
       it '今月の合計金額が返される' do
-        expect(usecase).to eq('1500円ナリ')
+        expect(usecase).to eq("#{Time.zone.now.strftime('%Y年%m月')}の合計\n\n1500円ナリ")
       end
     end
 
     context '論理削除されているレコードが存在する場合' do
-      let(:category_name) { nil }
+      let(:category_name) { '合計' }
 
       before do
         create(
@@ -49,7 +59,7 @@ RSpec.describe GetMonthlyTotalUsecase, type: :usecase do
       it '論理削除済みの家計簿データの分は合計に加算されない' do
         # このcontextで追加したexpense_recordの1000円分は加算されないので、
         # 合計は1500円になる。
-        expect(usecase).to eq('1500円ナリ')
+        expect(usecase).to eq("#{Time.zone.now.strftime('%Y年%m月')}の合計\n\n1500円ナリ")
       end
     end
 
@@ -58,7 +68,7 @@ RSpec.describe GetMonthlyTotalUsecase, type: :usecase do
         let(:category_name) { create(:category, name: '食費').name }
 
         it '今月の食費の合計金額が返される' do
-          expect(usecase).to eq('1500円ナリ')
+          expect(usecase).to eq("#{Time.zone.now.strftime('%Y年%m月')}の食費\n\n1500円ナリ")
         end
       end
 
@@ -66,7 +76,7 @@ RSpec.describe GetMonthlyTotalUsecase, type: :usecase do
         let(:category_name) { create(:category, name: '医療費').name }
 
         it '0円が返される' do
-          expect(usecase).to eq('0円ナリ')
+          expect(usecase).to eq("#{Time.zone.now.strftime('%Y年%m月')}の医療費\n\n0円ナリ")
         end
       end
 
@@ -85,7 +95,7 @@ RSpec.describe GetMonthlyTotalUsecase, type: :usecase do
         end
 
         it '今月の食費の合計金額が返される（論理削除済みの家計簿データ分は加算されない）' do
-          expect(usecase).to eq('1500円ナリ')
+          expect(usecase).to eq("#{Time.zone.now.strftime('%Y年%m月')}の食費\n\n1500円ナリ")
         end
       end
     end
