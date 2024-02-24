@@ -27,7 +27,7 @@ module MessageParser
         return error_message(ERROR_TYPE[:CATEGORY]) if category_not_found?(category)
 
         # '月の合計を返す'
-        GetMonthlyTotalUsecase.perform(user:, period:, category:)
+        GetMonthlyTotalUsecase.new(user:, period:, category:).perform
       end
 
       def error_message(error_type)

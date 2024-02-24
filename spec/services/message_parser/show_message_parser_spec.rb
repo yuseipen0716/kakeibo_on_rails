@@ -17,6 +17,14 @@ RSpec.describe MessageParser::ShowMessageParser do
 
       create(
         :expense_record,
+        amount: 3000,
+        transaction_date: Time.zone.now,
+        user:,
+        category: create(:category, name: '交通費')
+      )
+
+      create(
+        :expense_record,
         amount: 2000,
         transaction_date: 1.month.ago,
         user:,
@@ -37,7 +45,7 @@ RSpec.describe MessageParser::ShowMessageParser do
         let(:message) { '2023-11' }
 
         it "returns 2023/11's total" do
-          expect(result).to eq('3000円ナリ')
+          expect(result).to eq("2023年11月の費目別合計\n\n交際費: 3000円")
         end
       end
 
@@ -46,7 +54,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { "先月\n合計" }
 
           it "returns last month's total" do
-            expect(result).to eq('2000円ナリ')
+            expect(result).to eq("#{1.month.ago.strftime('%Y年%m月')}の合計\n\n2000円ナリ")
           end
         end
 
@@ -54,7 +62,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { '先月' }
 
           it "returns last month's total" do
-            expect(result).to eq('2000円ナリ')
+            expect(result).to eq("#{1.month.ago.strftime('%Y年%m月')}の費目別合計\n\n食費: 2000円")
           end
         end
       end
@@ -65,7 +73,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { "先月\n医療費" }
 
           it 'returns 0 yen' do
-            expect(result).to eq('0円ナリ')
+            expect(result).to eq("#{1.month.ago.strftime('%Y年%m月')}の医療費\n\n0円ナリ")
           end
         end
 
@@ -73,7 +81,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { "先月\n食費" }
 
           it 'returns the total of food for the last month' do
-            expect(result).to eq('2000円ナリ')
+            expect(result).to eq("#{1.month.ago.strftime('%Y年%m月')}の食費\n\n2000円ナリ")
           end
         end
       end
@@ -83,7 +91,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { "今月\n合計" }
 
           it "returns this month's total" do
-            expect(result).to eq('1500円ナリ')
+            expect(result).to eq("#{Time.zone.now.strftime('%Y年%m月')}の合計\n\n4500円ナリ")
           end
         end
 
@@ -91,7 +99,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { '今月' }
 
           it "returns this month's total" do
-            expect(result).to eq('1500円ナリ')
+            expect(result).to eq("#{Time.zone.now.strftime('%Y年%m月')}の費目別合計\n\n交通費: 3000円\n食費: 1500円")
           end
         end
       end
@@ -102,7 +110,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { "今月\n医療費" }
 
           it 'returns 0 yen' do
-            expect(result).to eq('0円ナリ')
+            expect(result).to eq("#{Time.zone.now.strftime('%Y年%m月')}の医療費\n\n0円ナリ")
           end
         end
 
@@ -110,7 +118,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { "今月\n食費" }
 
           it 'returns the total of food for the this month' do
-            expect(result).to eq('1500円ナリ')
+            expect(result).to eq("#{Time.zone.now.strftime('%Y年%m月')}の食費\n\n1500円ナリ")
           end
         end
       end
