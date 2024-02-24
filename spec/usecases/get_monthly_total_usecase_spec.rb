@@ -24,6 +24,14 @@ RSpec.describe GetMonthlyTotalUsecase, type: :usecase do
       end
     end
 
+    context 'categoryが「合計」の場合' do
+      let(:category_name) { '合計' }
+
+      it '今月の合計金額が返される' do
+        expect(usecase).to eq('1500円ナリ')
+      end
+    end
+
     context '論理削除されているレコードが存在する場合' do
       let(:category_name) { nil }
 
