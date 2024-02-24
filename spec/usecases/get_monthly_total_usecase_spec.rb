@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe GetMonthlyTotalUsecase, type: :usecase do
   describe 'perform' do
-    let(:usecase) { described_class.perform(user:, period:, category: category_name) }
+    let(:usecase) { described_class.new(user:, period:, category: category_name).perform }
     let(:user) { create(:user) }
     let(:period) { Time.zone.now.beginning_of_month..Time.zone.now.end_of_day }
 
