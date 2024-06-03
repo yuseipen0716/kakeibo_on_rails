@@ -2,6 +2,7 @@ module MessageParser
   class InputMessageParser
     CANCEL_WORDS = %w[とりけし 取り消し 取消 トリケシ].freeze
     HELP_WORDS = %w[へるぷ ヘルプ help HELP Help].freeze
+    REQUEST_TEMPLATE_WORDS = %w[てんぷれ テンプレ].freeze
 
     class << self
       def perform(message:, user:)
@@ -46,6 +47,7 @@ module MessageParser
       def perform_expense_or_income(message:, user:)
         # とりけし のようなメッセージが出た場合は、直近の家計簿データを論理削除する。
         return SoftDeleteLatestExpenseRecordUsecase.new(user).perform if CANCEL_WORDS.any? { |cancel_word| message.start_with?(cancel_word) }
+        return template_message if REQUEST_TEMPLATE_WORDS.any? { |request_template_word| message.start_with?(request_template_word) }
 
         expense_type = user.talk_mode.to_sym == :income_input_mode ? :income : :expense
         # parsed_message_hash: { category: category, amount: amount, memorandum: memorandum, transaction_date: transaction_date }
@@ -164,6 +166,17 @@ module MessageParser
           memorandum: memorandum || '',
           transaction_date: transaction_date || Time.zone.today.to_date.to_s
         }
+      end
+
+      def template_message
+        template_message = <<~TEMPLATE
+          食費
+          1000
+          ラーメン
+          #{Time.zone.today.strftime('%Y-%m-%d')}
+        TEMPLATE
+
+        template_message.chomp
       end
     end
   end
