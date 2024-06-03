@@ -195,6 +195,22 @@ RSpec.describe MessageParser::InputMessageParser do
         end
       end
 
+      context '入力テンプレートをリクエストする場合' do
+        let(:message) { 'テンプレ' }
+        let(:response_message) do
+          <<~MESSAGE
+            食費
+            1000
+            ラーメン
+            #{Time.zone.today.strftime('%Y-%m-%d')}
+          MESSAGE
+        end
+
+        it '入力テンプレートが返却される' do
+          expect(result).to eq(response_message.chomp)
+        end
+      end
+
       context 'when expense_input message is invalid' do
         context 'when category is empty' do
           let(:message) { '' }
@@ -354,6 +370,22 @@ RSpec.describe MessageParser::InputMessageParser do
         end
 
         it 'とりけし成功のメッセージが返却される' do
+          expect(result).to eq(response_message.chomp)
+        end
+      end
+
+      context '入力テンプレートをリクエストする場合' do
+        let(:message) { 'テンプレ' }
+        let(:response_message) do
+          <<~MESSAGE
+            食費
+            1000
+            ラーメン
+            #{Time.zone.today.strftime('%Y-%m-%d')}
+          MESSAGE
+        end
+
+        it '入力テンプレートが返却される' do
           expect(result).to eq(response_message.chomp)
         end
       end
