@@ -3,6 +3,7 @@ module MessageParser
     CANCEL_WORDS = %w[とりけし 取り消し 取消 トリケシ].freeze
     HELP_WORDS = %w[へるぷ ヘルプ help HELP Help].freeze
     REQUEST_TEMPLATE_WORDS = %w[てんぷれ テンプレ].freeze
+    REQUEST_CATEGORY_WORDS = %w[費目 ひもく].freeze
 
     class << self
       def perform(message:, user:)
@@ -44,10 +45,12 @@ module MessageParser
         "メッセージの形式が正しくありません。\nもう一度最初から操作を行ってください。"
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def perform_expense_or_income(message:, user:)
         # とりけし のようなメッセージが出た場合は、直近の家計簿データを論理削除する。
         return SoftDeleteLatestExpenseRecordUsecase.new(user).perform if CANCEL_WORDS.any? { |cancel_word| message.start_with?(cancel_word) }
         return template_message if REQUEST_TEMPLATE_WORDS.any? { |request_template_word| message.start_with?(request_template_word) }
+        return list_category_message(user) if REQUEST_CATEGORY_WORDS.any? { |request_category_word| message.start_with?(request_category_word) }
 
         expense_type = user.talk_mode.to_sym == :income_input_mode ? :income : :expense
         # parsed_message_hash: { category: category, amount: amount, memorandum: memorandum, transaction_date: transaction_date }
@@ -60,6 +63,7 @@ module MessageParser
         # 家計簿データの入力処理を行い、その結果をメッセージで返す。
         CreateExpenseRecordUsecase.perform(expense_record_attrs: parsed_message_hash, expense_type:, user:)
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def request_expense_or_income_data(talk_mode)
         talk_mode = talk_mode.to_s unless talk_mode.is_a?(String)
@@ -177,6 +181,19 @@ module MessageParser
         TEMPLATE
 
         template_message.chomp
+      end
+
+      def list_category_message(user)
+        category_names = ListCategoryNameUsecase.new(user).perform
+        return '表示できる費目が存在しません。' if category_names.blank?
+
+        category_names_message = <<~MESSAGE
+          これまでに使用したことのある費目
+
+          #{category_names.join("\n")}
+        MESSAGE
+
+        category_names_message.chomp
       end
     end
   end
