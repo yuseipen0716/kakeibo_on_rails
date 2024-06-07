@@ -24,16 +24,8 @@ RSpec.describe ListCategoryNameUsecase, type: :usecase do
           )
         end
 
-        it 'returns ActiveRecord::Relation object' do
-          expect(usecase).to be_a(ActiveRecord::Relation)
-        end
-
-        it 'returns Category records' do
-          expect(usecase.last).to be_a(Category)
-        end
-
-        it 'returns category that name 食費' do
-          expect(usecase.last.name).to eq('食費')
+        it 'returns category name' do
+          expect(usecase).to eq(['食費'])
         end
       end
     end
@@ -57,16 +49,8 @@ RSpec.describe ListCategoryNameUsecase, type: :usecase do
           )
         end
 
-        it 'returns ActiveRecord::Relation object' do
-          expect(usecase).to be_a(ActiveRecord::Relation)
-        end
-
-        it 'returns Category records' do
-          expect(usecase.last).to be_a(Category)
-        end
-
-        it 'returns category that name 食費' do
-          expect(usecase.last.name).to eq('給与')
+        it 'returns category name' do
+          expect(usecase).to eq(['給与'])
         end
       end
     end

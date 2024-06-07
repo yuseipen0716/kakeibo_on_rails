@@ -8,8 +8,8 @@ class ListCategoryNameUsecase
     records = expense_or_income_records
     return [] if records.blank?
 
-    category_ids = records.pluck(:category_id)
-    Category.where(id: category_ids)
+    category_ids = records.pluck(:category_id).uniq
+    Category.where(id: category_ids).pluck(:name)
   end
 
   private
