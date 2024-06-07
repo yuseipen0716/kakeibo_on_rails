@@ -28,6 +28,27 @@ RSpec.describe ListCategoryNameUsecase, type: :usecase do
           expect(usecase).to eq(['食費'])
         end
       end
+
+      context "when other user's expense records exists" do
+        before do
+          create(
+            :expense_record,
+            expense_type: :expense,
+            category: create(:category, name: '食費'),
+            user:
+          )
+          create(
+            :expense_record,
+            expense_type: :expense,
+            category: create(:category, name: '書籍'),
+            user: create(:user)
+          )
+        end
+
+        it 'returns category name only own records' do
+          expect(usecase).to eq(['食費'])
+        end
+      end
     end
 
     context 'when talk_mode is expense' do
@@ -50,6 +71,27 @@ RSpec.describe ListCategoryNameUsecase, type: :usecase do
         end
 
         it 'returns category name' do
+          expect(usecase).to eq(['給与'])
+        end
+      end
+
+      context "when other user's income records exists" do
+        before do
+          create(
+            :expense_record,
+            expense_type: :income,
+            category: create(:category, name: '給与'),
+            user:
+          )
+          create(
+            :expense_record,
+            expense_type: :expense,
+            category: create(:category, name: '贈与'),
+            user: create(:user)
+          )
+        end
+
+        it 'returns category name only own records' do
           expect(usecase).to eq(['給与'])
         end
       end
