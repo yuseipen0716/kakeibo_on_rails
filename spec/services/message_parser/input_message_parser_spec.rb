@@ -211,6 +211,48 @@ RSpec.describe MessageParser::InputMessageParser do
         end
       end
 
+      context '費目リストを確認する場合' do
+        let(:message) { '費目' }
+
+        context 'when expense record is empty' do
+          let(:response_message) { '表示できる費目が存在しません。' }
+
+          it 'returns empty message' do
+            expect(result).to eq(response_message)
+          end
+        end
+
+        context 'when expense record exists' do
+          before do
+            create(
+              :expense_record,
+              expense_type: :expense,
+              category: create(:category, name: '食費'),
+              user:
+            )
+            create(
+              :expense_record,
+              expense_type: :expense,
+              category: create(:category, name: '書籍'),
+              user:
+            )
+          end
+
+          let(:response_message) do
+            <<~MESSAGE
+              これまでに使用したことのある費目
+
+              食費
+              書籍
+            MESSAGE
+          end
+
+          it 'これまでに使用したことのある費目名が返却される' do
+            expect(result).to eq(response_message.chomp)
+          end
+        end
+      end
+
       context 'when expense_input message is invalid' do
         context 'when category is empty' do
           let(:message) { '' }
@@ -387,6 +429,48 @@ RSpec.describe MessageParser::InputMessageParser do
 
         it '入力テンプレートが返却される' do
           expect(result).to eq(response_message.chomp)
+        end
+      end
+
+      context '費目リストを確認する場合' do
+        let(:message) { '費目' }
+
+        context 'when expense record is empty' do
+          let(:response_message) { '表示できる費目が存在しません。' }
+
+          it 'returns empty message' do
+            expect(result).to eq(response_message)
+          end
+        end
+
+        context 'when expense record exists' do
+          before do
+            create(
+              :expense_record,
+              expense_type: :income,
+              category: create(:category, name: '給与'),
+              user:
+            )
+            create(
+              :expense_record,
+              expense_type: :income,
+              category: create(:category, name: '贈与'),
+              user:
+            )
+          end
+
+          let(:response_message) do
+            <<~MESSAGE
+              これまでに使用したことのある費目
+
+              給与
+              贈与
+            MESSAGE
+          end
+
+          it 'これまでに使用したことのある費目名が返却される' do
+            expect(result).to eq(response_message.chomp)
+          end
         end
       end
 
