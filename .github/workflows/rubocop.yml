@@ -1,0 +1,17 @@
+name: Run RSpec tests
+
+on:
+  push:
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: docker compose up
+        run: docker compose up -d
+
+      - name: Run Rubocop
+        run: docker compose exec web bundle exec rubocop -D -E -S -P
