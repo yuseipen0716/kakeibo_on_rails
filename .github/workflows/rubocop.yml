@@ -1,10 +1,10 @@
-name: Run RSpec tests
+name: Run Rubocop
 
 on:
   push:
 
 jobs:
-  rspec:
+  rubocop:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
