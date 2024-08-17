@@ -52,6 +52,8 @@ module MessageHandler
 
           の形で入力してください。
           金額部分には「円」などの表記は不要です。
+
+          誤って入力してしまった場合\n「とりけし」と入力することで、直前の家計簿データを削除することができます。
         INPUT
         message << first_message
 
@@ -71,6 +73,8 @@ module MessageHandler
 
           の形で入力してください。
           金額部分には「円」などの表記は不要です。
+
+          誤って入力してしまった場合\n「とりけし」と入力することで、直前の家計簿データを削除することができます。
         INPUT
         message << first_message
 

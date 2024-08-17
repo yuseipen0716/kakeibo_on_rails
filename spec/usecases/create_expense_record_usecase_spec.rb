@@ -23,12 +23,6 @@ RSpec.describe CreateExpenseRecordUsecase, type: :usecase do
           金額: 500
           備考: memorandum
           日付: #{Time.zone.today.to_date}
-
-          支出データを続けて入力する場合は、このまま続けて入力できます。
-
-          収入データを入力する場合は、収入データ入力のメニューをタップしてください。
-
-          入力したデータを取り消したい場合は、「とりけし」と入力してください。
         MESSAGE
       end
 
@@ -59,12 +53,6 @@ RSpec.describe CreateExpenseRecordUsecase, type: :usecase do
           金額: 200000
           備考: memorandum
           日付: #{Time.zone.today.to_date}
-
-          収入データを続けて入力する場合は、このまま続けて入力できます。
-
-          支出データを入力する場合は、支出データ入力のメニューをタップしてください。
-
-          入力したデータを取り消したい場合は、「とりけし」と入力してください。
         MESSAGE
       end
 

@@ -23,12 +23,6 @@ class CreateExpenseRecordUsecase
             金額: #{record.amount}
             備考: #{record.memorandum.present? ? record.memorandum : ''}
             日付: #{record.transaction_date.to_date}
-
-            #{expense_type == :expense ? '支出' : '収入'}データを続けて入力する場合は、このまま続けて入力できます。
-
-            #{expense_type == :expense ? '収入' : '支出'}データを入力する場合は、#{expense_type == :expense ? '収入' : '支出'}データ入力のメニューをタップしてください。
-
-            入力したデータを取り消したい場合は、「とりけし」と入力してください。
           MESSAGE
 
           response_message.chomp
