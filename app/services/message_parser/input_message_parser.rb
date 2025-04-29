@@ -137,7 +137,7 @@ module MessageParser
       def date?(str)
         # 基本的には2023-09-09のようなフォーマットでとりたいが、20230909の表記ゆれは許容する
         # `/`区切りの表記も許容してほしいという要望があったため、許容することにする。
-        str.match?(/\A\d{4}-\d{2}-\d{2}\z/) || str.match?(/\A\d{8}\z/) || str.match?(/\A\d{4}\/\d{2}\/\d{2}\z/)
+        str.match?(/\A\d{4}-\d{2}-\d{2}\z/) || str.match?(/\A\d{8}\z/) || str.match?(%r{\A\d{4}/\d{2}/\d{2}\z})
       end
 
       # params message:
