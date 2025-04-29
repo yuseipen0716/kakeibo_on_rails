@@ -140,6 +140,42 @@ RSpec.describe MessageParser::InputMessageParser do
         end
       end
 
+      context 'when expense_input message is valid and date does not have `-`' do
+        let(:message) { "食費\n1000\nラーメン\n20231230" }
+        let(:response_message) do
+          <<~RESPONSE
+            支出データの登録に成功しました💡
+
+            費目: 食費
+            金額: 1000
+            備考: ラーメン
+            日付: 2023-12-30
+          RESPONSE
+        end
+
+        it 'succeeds in creating expense_record' do
+          expect(result).to eq(response_message.chomp)
+        end
+      end
+
+      context 'when expense_input message is valid and date splitted `/`' do
+        let(:message) { "食費\n1000\nラーメン\n2023/12/30" }
+        let(:response_message) do
+          <<~RESPONSE
+            支出データの登録に成功しました💡
+
+            費目: 食費
+            金額: 1000
+            備考: ラーメン
+            日付: 2023-12-30
+          RESPONSE
+        end
+
+        it 'succeeds in creating expense_record' do
+          expect(result).to eq(response_message.chomp)
+        end
+      end
+
       context '入力したデータを取り消す場合' do
         let(:message) { 'とりけし' }
         let(:response_message) do
@@ -335,6 +371,42 @@ RSpec.describe MessageParser::InputMessageParser do
             金額: 200000
             備考: 12月給与
             日付: #{Time.zone.today.to_date}
+          RESPONSE
+        end
+
+        it 'succeeds in creating expense_record' do
+          expect(result).to eq(response_message.chomp)
+        end
+      end
+
+      context 'when expense_input message is valid and date does not have `-`' do
+        let(:message) { "給与\n200000\n12月給与\n20231230" }
+        let(:response_message) do
+          <<~RESPONSE
+            収入データの登録に成功しました💡
+
+            費目: 給与
+            金額: 200000
+            備考: 12月給与
+            日付: 2023-12-30
+          RESPONSE
+        end
+
+        it 'succeeds in creating expense_record' do
+          expect(result).to eq(response_message.chomp)
+        end
+      end
+
+      context 'when expense_input message is valid and date splitted `/`' do
+        let(:message) { "給与\n200000\n12月給与\n2023/12/30" }
+        let(:response_message) do
+          <<~RESPONSE
+            収入データの登録に成功しました💡
+
+            費目: 給与
+            金額: 200000
+            備考: 12月給与
+            日付: 2023-12-30
           RESPONSE
         end
 
