@@ -12,7 +12,7 @@ class SoftDeleteLatestExpenseRecordUsecase
 
       費目: #{@latest_expense_record.category.name}
       金額: #{@latest_expense_record.amount}
-      備考: #{@latest_expense_record.memorandum.present? ? @latest_expense_record.memorandum : ''}
+      備考: #{@latest_expense_record.memorandum.present? ? @latest_expense_record.memorandum : ""}
       日付: #{@latest_expense_record.transaction_date.to_date}
     MESSAGE
 

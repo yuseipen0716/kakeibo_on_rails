@@ -1,12 +1,12 @@
 module MessageHandler
   class CoreHandler
     BUILT_IN_MESSAGE = {
-      INPUT: '家計簿データ入力',
-      EXPENSE_INPUT: '支出データ入力',
-      INCOME_INPUT: '収入データ入力',
-      SHOW: '家計簿データ確認',
-      GROUP: 'グループ作成・参加',
-      HELP: 'ヘルプ'
+      INPUT: "家計簿データ入力",
+      EXPENSE_INPUT: "支出データ入力",
+      INCOME_INPUT: "収入データ入力",
+      SHOW: "家計簿データ確認",
+      GROUP: "グループ作成・参加",
+      HELP: "ヘルプ"
     }.freeze
     class << self
       # messageを受け取り、適切な処理に振り分け、replyを返す
@@ -35,7 +35,7 @@ module MessageHandler
       private
 
       def group_mode_message
-        message = "トークモード: #{User.human_attribute_name('talk_mode.group_mode')}\n"
+        message = "トークモード: #{User.human_attribute_name("talk_mode.group_mode")}\n"
         message << "--------------------------------------\n"
         message << "グループを新しく作成する場合は「作成」と入力してください。\nグループに参加する場合は「参加」と入力してください。\n"
 
@@ -55,9 +55,9 @@ module MessageHandler
         when :input_mode
           MessageHandler::InputMessageHandler.input_first_message
         when :show_mode
-          '確認モードのヘルプメッセージ'
+          "確認モードのヘルプメッセージ"
         when :group_mode
-          'グループモードのヘルプメッセージ'
+          "グループモードのヘルプメッセージ"
         end
       end
 
@@ -68,9 +68,9 @@ module MessageHandler
         when :show_mode
           MessageHandler::ShowMessageHandler.perform(user, message)
         when :group_mode
-          'handle_other_group'
+          "handle_other_group"
         else
-          '不明なメッセージ'
+          "不明なメッセージ"
         end
       end
     end

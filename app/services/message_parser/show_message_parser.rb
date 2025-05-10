@@ -47,25 +47,25 @@ module MessageParser
       def parse_period(str)
         return error_message(ERROR_TYPE[:MONTH]) unless month_specification_valid?(str)
 
-        if str == '今月'
+        if str == "今月"
           start_of_period = Time.zone.now.beginning_of_month
           end_of_period = Time.zone.now.end_of_day
         end
 
-        if str == '先月'
+        if str == "先月"
           start_of_period = Time.zone.now.last_month.beginning_of_month
           end_of_period = Time.zone.now.last_month.end_of_month.end_of_day
         end
 
         if str.match?(/\A\d{4}-\d{2}\z/)
-          start_of_period = Time.zone.strptime(str, '%Y-%m')
+          start_of_period = Time.zone.strptime(str, "%Y-%m")
           end_of_period = start_of_period.end_of_month.end_of_day
         end
         start_of_period..end_of_period
       end
 
       def month_specification_valid?(str)
-        str == '今月' || str == '先月' || str.match?(/\A\d{4}-\d{2}\z/)
+        str == "今月" || str == "先月" || str.match?(/\A\d{4}-\d{2}\z/)
       end
 
       def month_specification_error_message
@@ -92,7 +92,7 @@ module MessageParser
 
       def category_not_found?(category)
         # 期間のみ入力されて費目の指定がない場合、費目の部分に合計と書かれた場合は除外
-        category && category != '合計' && !Category.find_by(name: category)
+        category && category != "合計" && !Category.find_by(name: category)
       end
 
       def category_not_found_message

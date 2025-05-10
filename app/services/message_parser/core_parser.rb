@@ -11,9 +11,9 @@ module MessageParser
         when :show
           MessageParser::ShowMessageParser.perform(message:, user:)
         when :group
-          'MessageParser::GroupMessageParser'
+          "MessageParser::GroupMessageParser"
         else
-          'other message'
+          "other message"
         end
       end
     end
