@@ -5,7 +5,7 @@
 | Name | Version |
 | --- | --- |
 | Ruby | 3.2.2 |
-|Rails | 7.0.7.2 |
+|Rails | 7.1.5.1 |
 
 ## Start development
 ```
