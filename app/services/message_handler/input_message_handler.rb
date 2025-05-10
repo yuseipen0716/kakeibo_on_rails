@@ -14,7 +14,7 @@ module MessageHandler
       end
 
       def input_first_message
-        message = "トークモード: #{User.human_attribute_name('talk_mode.input_mode')}\n"
+        message = "トークモード: #{User.human_attribute_name("talk_mode.input_mode")}\n"
         message << "---------------------------------\n"
         # first_message = <<~INPUT
         #   家計簿データを入力する場合は、
@@ -40,7 +40,7 @@ module MessageHandler
       end
 
       def expense_input_first_message
-        message = "トークモード: #{User.human_attribute_name('talk_mode.expense_input_mode')}\n"
+        message = "トークモード: #{User.human_attribute_name("talk_mode.expense_input_mode")}\n"
         message << "---------------------------------\n"
         first_message = <<~INPUT
           支出データを入力する場合は、
@@ -61,7 +61,7 @@ module MessageHandler
       end
 
       def income_input_first_message
-        message = "トークモード: #{User.human_attribute_name('talk_mode.income_input_mode')}\n"
+        message = "トークモード: #{User.human_attribute_name("talk_mode.income_input_mode")}\n"
         message << "---------------------------------\n"
         first_message = <<~INPUT
           収入データを入力する場合は、

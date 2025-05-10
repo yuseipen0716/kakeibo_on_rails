@@ -12,7 +12,7 @@ class GetMonthlyTotalUsecase
     case @category
     when nil
       monthly_total_group_by_category_name
-    when '合計'
+    when "合計"
       monthly_total
     else
       monthly_total_of_the_category
@@ -46,7 +46,7 @@ class GetMonthlyTotalUsecase
                                      .expense
                                      .where(transaction_date: @period)
                                      .joins(:category)
-                                     .group('categories.name')
+                                     .group("categories.name")
                                      .sum(:amount)
 
     expense_messages = expenses_by_category_name.map do |category_name, total|
@@ -55,13 +55,13 @@ class GetMonthlyTotalUsecase
 
     # 返却するメッセージの1行目をここで用意
     # 2行目は空行を出力したいため、空文字の要素を置いておく。
-    head_message = ["#{formatted_year_month}の費目別合計", '']
+    head_message = ["#{formatted_year_month}の費目別合計", ""]
 
     # 先頭に表示するメッセージに、各費目ごとのメッセージの配列を合わせて、join
     (head_message + expense_messages).join("\n")
   end
 
   def formatted_year_month
-    @period.begin.strftime('%Y年%m月')
+    @period.begin.strftime("%Y年%m月")
   end
 end

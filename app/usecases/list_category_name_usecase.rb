@@ -17,6 +17,6 @@ class ListCategoryNameUsecase
   def expense_or_income_records
     # 直近5か月で入力した費目のみ取得するようにしてみる。
     records = ExpenseRecord.active.where(user_id: @user.id, created_at: 5.months.ago..)
-    @user.talk_mode == 'income_input_mode' ? records.income : records.expense
+    @user.talk_mode == "income_input_mode" ? records.income : records.expense
   end
 end

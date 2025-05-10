@@ -1,15 +1,15 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe MessageHandler::CoreHandler do
-  describe 'perform' do
+  describe "perform" do
     let(:result) { described_class.perform(message, line_id) }
     let(:user) { create(:user, line_id:) }
-    let(:line_id) { '1234567890' }
+    let(:line_id) { "1234567890" }
 
     before { user }
 
     # 家計簿データ入力
-    context 'when input expense or income record' do
+    context "when input expense or income record" do
       let(:message) { MessageHandler::CoreHandler::BUILT_IN_MESSAGE[:INPUT] }
       let(:response_message) do
         <<~RESPONSE
@@ -21,13 +21,13 @@ RSpec.describe MessageHandler::CoreHandler do
         RESPONSE
       end
 
-      it 'return input_first_message' do
+      it "return input_first_message" do
         expect(result).to eq(response_message.chomp)
       end
     end
 
     # 支出データ入力
-    context 'when input expense orecord' do
+    context "when input expense orecord" do
       let(:message) { MessageHandler::CoreHandler::BUILT_IN_MESSAGE[:EXPENSE_INPUT] }
       let(:response_message) do
         <<~RESPONSE
@@ -48,13 +48,13 @@ RSpec.describe MessageHandler::CoreHandler do
         RESPONSE
       end
 
-      it 'return expense_input_first_message' do
+      it "return expense_input_first_message" do
         expect(result).to eq(response_message.chomp)
       end
     end
 
     # 収入データ入力
-    context 'when input income record' do
+    context "when input income record" do
       let(:message) { MessageHandler::CoreHandler::BUILT_IN_MESSAGE[:INCOME_INPUT] }
       let(:response_message) do
         <<~RESPONSE
@@ -75,13 +75,13 @@ RSpec.describe MessageHandler::CoreHandler do
         RESPONSE
       end
 
-      it 'return income_input_first_message' do
+      it "return income_input_first_message" do
         expect(result).to eq(response_message.chomp)
       end
     end
 
     # 家計簿データ確認
-    context 'when show expense records' do
+    context "when show expense records" do
       let(:message) { MessageHandler::CoreHandler::BUILT_IN_MESSAGE[:SHOW] }
       let(:response_message) do
         <<~RESPONSE
@@ -106,13 +106,13 @@ RSpec.describe MessageHandler::CoreHandler do
         RESPONSE
       end
 
-      it 'return show_first_message' do
+      it "return show_first_message" do
         expect(result).to eq(response_message.chomp)
       end
     end
 
     # グループ作成・参加
-    context 'when create or participate in group' do
+    context "when create or participate in group" do
       let(:message) { MessageHandler::CoreHandler::BUILT_IN_MESSAGE[:GROUP] }
       let(:response_message) do
         # グループ機能をリリースする際に修正が必要
@@ -124,13 +124,13 @@ RSpec.describe MessageHandler::CoreHandler do
         RESPONSE
       end
 
-      it 'return group_first_message' do
+      it "return group_first_message" do
         expect(result).to eq(response_message.chomp)
       end
     end
 
     # ヘルプ
-    context 'when show help message' do
+    context "when show help message" do
       let(:message) { MessageHandler::CoreHandler::BUILT_IN_MESSAGE[:HELP] }
       let(:response_message) do
         # まだリリース前のため、メッセージは仮置きしてある。
@@ -142,7 +142,7 @@ RSpec.describe MessageHandler::CoreHandler do
         RESPONSE
       end
 
-      it 'return help_message' do
+      it "return help_message" do
         expect(result).to eq(response_message.chomp)
       end
     end

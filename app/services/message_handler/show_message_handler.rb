@@ -19,7 +19,7 @@ module MessageHandler
       end
 
       def show_first_message
-        message = "トークモード: #{User.human_attribute_name('talk_mode.show_mode')}\n"
+        message = "トークモード: #{User.human_attribute_name("talk_mode.show_mode")}\n"
         message << "---------------------------------\n"
 
         first_message = <<~SHOW

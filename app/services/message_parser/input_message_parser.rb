@@ -113,11 +113,11 @@ module MessageParser
       # params lines: string[]
       def check_input_message(message_hash)
         error_messages = []
-        error_messages << '費目の入力は必須です。' if message_hash[:category].empty? # ないと思うけど。
-        error_messages << '金額の入力は必須です。' if message_hash[:amount].empty?
-        error_messages << '費目は10文字以内で設定してください。' if message_hash[:category].length > 10
-        error_messages << '金額は半角数字で入力してください。円などの単位も不要です。' unless message_hash[:amount].empty? || message_hash[:amount].match?(/\A\d+\z/)
-        error_messages << '入力された日付の値が不正です。' unless date?(message_hash[:transaction_date])
+        error_messages << "費目の入力は必須です。" if message_hash[:category].empty? # ないと思うけど。
+        error_messages << "金額の入力は必須です。" if message_hash[:amount].empty?
+        error_messages << "費目は10文字以内で設定してください。" if message_hash[:category].length > 10
+        error_messages << "金額は半角数字で入力してください。円などの単位も不要です。" unless message_hash[:amount].empty? || message_hash[:amount].match?(/\A\d+\z/)
+        error_messages << "入力された日付の値が不正です。" unless date?(message_hash[:transaction_date])
         error_messages
       end
 
@@ -131,7 +131,7 @@ module MessageParser
 
       def normalize_dash(str = nil)
         # 入力時の変換によって、ハイフンに表記のブレが生じたため、normalizeしたい
-        str&.gsub(/[‐－–—]/, '-')
+        str&.gsub(/[‐－–—]/, "-")
       end
 
       def date?(str)
@@ -157,7 +157,7 @@ module MessageParser
         if lines.length == 3
           if date?(normalize_dash(lines[2]))
             # messageの3行目が日付のデータであった場合
-            memorandum = ''
+            memorandum = ""
             transaction_date = normalize_dash(lines[2])
           else
             # messageの3行目が日付データでなかった場合
@@ -166,9 +166,9 @@ module MessageParser
         end
 
         {
-          category: category || '',
-          amount: amount || '',
-          memorandum: memorandum || '',
+          category: category || "",
+          amount: amount || "",
+          memorandum: memorandum || "",
           transaction_date: transaction_date || Time.zone.today.to_date.to_s
         }
       end
@@ -178,7 +178,7 @@ module MessageParser
           食費
           1000
           ラーメン
-          #{Time.zone.today.strftime('%Y-%m-%d')}
+          #{Time.zone.today.strftime("%Y-%m-%d")}
         TEMPLATE
 
         template_message.chomp
@@ -186,7 +186,7 @@ module MessageParser
 
       def list_category_message(user)
         category_names = ListCategoryNameUsecase.new(user).perform
-        return '表示できる費目が存在しません。' if category_names.blank?
+        return "表示できる費目が存在しません。" if category_names.blank?
 
         category_names_message = <<~MESSAGE
           これまでに使用したことのある費目

@@ -17,11 +17,11 @@ class CreateExpenseRecordUsecase
           record.save!
 
           response_message = <<~MESSAGE
-            #{expense_type == :expense ? '支出' : '収入'}データの登録に成功しました💡
+            #{expense_type == :expense ? "支出" : "収入"}データの登録に成功しました💡
 
             費目: #{record.category.name}
             金額: #{record.amount}
-            備考: #{record.memorandum.present? ? record.memorandum : ''}
+            備考: #{record.memorandum.present? ? record.memorandum : ""}
             日付: #{record.transaction_date.to_date}
           MESSAGE
 
