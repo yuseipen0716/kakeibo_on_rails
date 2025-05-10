@@ -44,7 +44,8 @@ Rails.application.configure do
   # config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true # for rails 7.1
+  # rails 7.1.5.1にupgradeした際に追加されたが、LINE Messaging APIへのPOSTができなくなるため、一旦falseにしておく。
+  config.force_ssl = false
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new($stdout)
