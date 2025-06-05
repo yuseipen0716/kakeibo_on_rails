@@ -15,7 +15,7 @@ gem "sqlite3", "~> 1.4"
 gem "puma", "~> 6.4.0"
 
 # rack
-gem "rack", "~> 3.0"
+gem "rack", "~> 3.1"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
