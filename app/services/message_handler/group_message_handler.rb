@@ -45,8 +45,15 @@ module MessageHandler
         create_group_for_user(user, group_name)
       end
 
-      def handle_group_joining_mode(_user, _message)
-        "グループ参加処理（未実装）"
+      def handle_group_joining_mode(user, message)
+        group_name = message.strip
+
+        # バリデーション
+        validation_error = validate_group_joining(user, group_name)
+        return validation_error if validation_error
+
+        # グループ参加処理
+        join_existing_group(user, group_name)
       end
 
       def group_mode_message
@@ -99,6 +106,42 @@ module MessageHandler
 
       def group_creation_success_message(group)
         message = "グループを作成しました。\n\n"
+        message << "グループ名: #{group.name}\n"
+        message << "参加メンバー: #{group.users.count}人"
+
+        # TODO: 今後、家計簿データの確認モードで同じグループの家計簿データの合計を出す機能などを実装予定
+        message
+      end
+
+      def validate_group_joining(user, group_name)
+        return "グループ名を入力してください。" if group_name.blank?
+
+        target_group = Group.find_by(name: group_name)
+        return "指定されたグループは存在しません。" unless target_group
+
+        if user.group.present?
+          user.update(talk_mode: :default_mode)
+          return "既にそのグループに参加しています。" if user.group == target_group
+
+          return "既にグループに参加しています。"
+        end
+
+        nil
+      end
+
+      def join_existing_group(user, group_name)
+        target_group = Group.find_by(name: group_name)
+
+        ActiveRecord::Base.transaction do
+          user.update!(group: target_group, talk_mode: :default_mode)
+          group_joining_success_message(target_group)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        "グループへの参加に失敗しました。#{e.message}"
+      end
+
+      def group_joining_success_message(group)
+        message = "グループ: #{group.name} に参加しました。\n\n"
         message << "グループ名: #{group.name}\n"
         message << "参加メンバー: #{group.users.count}人"
 

@@ -135,9 +135,91 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
     context "when user is in group_joining_mode" do
       let(:user) { create(:user, talk_mode: :group_joining_mode) }
 
-      it "returns placeholder message" do
-        result = MessageHandler::GroupMessageHandler.perform(user, "テストグループ")
-        expect(result).to eq("グループ参加処理（未実装）")
+      context "with valid group name" do
+        let!(:existing_group) { create(:group, name: "既存グループ") }
+
+        it "joins existing group and associates user" do
+          expect do
+            MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          end.to change { user.reload.group }.from(nil).to(existing_group)
+        end
+
+        it "updates user's talk_mode to default_mode" do
+          MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          expect(user.reload.talk_mode).to eq("default_mode")
+        end
+
+        it "returns success message" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          expect(result).to include("グループ: 既存グループ に参加しました。")
+          expect(result).to include("グループ名: 既存グループ")
+          expect(result).to include("参加メンバー: 1人")
+        end
+
+        it "increments group member count when multiple users join" do
+          another_user = create(:user)
+          existing_group.users << another_user
+
+          result = MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          expect(result).to include("参加メンバー: 2人")
+        end
+
+        it "handles group names with special characters" do
+          create(:group, name: "家族😊💰")
+          result = MessageHandler::GroupMessageHandler.perform(user, "家族😊💰")
+          expect(result).to include("グループ: 家族😊💰 に参加しました。")
+        end
+
+        it "handles whitespace around group name" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "  既存グループ  ")
+          expect(result).to include("グループ: 既存グループ に参加しました。")
+        end
+      end
+
+      context "with validation errors" do
+        it "returns error message for blank group name" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "")
+          expect(result).to eq("グループ名を入力してください。")
+        end
+
+        it "returns error message for whitespace only group name" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "   ")
+          expect(result).to eq("グループ名を入力してください。")
+        end
+
+        it "returns error message for non-existent group" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "存在しないグループ")
+          expect(result).to eq("指定されたグループは存在しません。")
+        end
+
+        it "returns error message and changes talk_mode when user already belongs to a group" do
+          existing_group = create(:group, name: "既存グループ")
+          create(:group, name: "別のグループ")
+          user.update(group: existing_group)
+
+          result = MessageHandler::GroupMessageHandler.perform(user, "別のグループ")
+          expect(result).to eq("既にグループに参加しています。")
+          expect(user.reload.talk_mode).to eq("default_mode")
+        end
+
+        it "returns error message and changes talk_mode when user already belongs to the same group" do
+          existing_group = create(:group, name: "同じグループ")
+          user.update(group: existing_group)
+
+          result = MessageHandler::GroupMessageHandler.perform(user, "同じグループ")
+          expect(result).to eq("既にそのグループに参加しています。")
+          expect(user.reload.talk_mode).to eq("default_mode")
+        end
+      end
+
+      context "with database errors" do
+        let!(:existing_group) { create(:group, name: "既存グループ") }
+
+        it "handles ActiveRecord errors gracefully" do
+          allow(user).to receive(:update!).and_raise(ActiveRecord::RecordInvalid.new(user))
+          result = MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          expect(result).to include("グループへの参加に失敗しました。")
+        end
       end
     end
 
