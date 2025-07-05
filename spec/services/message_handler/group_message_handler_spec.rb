@@ -163,6 +163,17 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
           result = MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
           expect(result).to include("参加メンバー: 2人")
         end
+
+        it "handles group names with special characters" do
+          create(:group, name: "家族😊💰")
+          result = MessageHandler::GroupMessageHandler.perform(user, "家族😊💰")
+          expect(result).to include("グループ: 家族😊💰 に参加しました。")
+        end
+
+        it "handles whitespace around group name" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "  既存グループ  ")
+          expect(result).to include("グループ: 既存グループ に参加しました。")
+        end
       end
 
       context "with validation errors" do
