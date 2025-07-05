@@ -34,8 +34,15 @@ module MessageHandler
         end
       end
 
-      def handle_group_creating_mode(_user, _message)
-        "グループ作成処理（未実装）"
+      def handle_group_creating_mode(user, message)
+        group_name = message.strip
+
+        # バリデーション
+        validation_error = validate_group_creation(user, group_name)
+        return validation_error if validation_error
+
+        # グループ作成処理
+        create_group_for_user(user, group_name)
       end
 
       def handle_group_joining_mode(_user, _message)
@@ -65,6 +72,38 @@ module MessageHandler
         message << "参加したいグループ名を入力してください"
 
         message.chomp
+      end
+
+      def validate_group_creation(user, group_name)
+        return "グループ名を入力してください。" if group_name.blank?
+        return "グループ名は10文字以内で入力してください。" if group_name.length > 10
+        return "そのグループ名は既に使用されています。別のグループ名で作成してください。" if Group.exists?(name: group_name)
+
+        if user.group.present?
+          user.update(talk_mode: :default_mode)
+          return "既にグループに参加しています。"
+        end
+
+        nil
+      end
+
+      def create_group_for_user(user, group_name)
+        ActiveRecord::Base.transaction do
+          group = Group.create!(name: group_name)
+          user.update!(group: group, talk_mode: :default_mode)
+          group_creation_success_message(group)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        "グループの作成に失敗しました。#{e.message}"
+      end
+
+      def group_creation_success_message(group)
+        message = "グループを作成しました。\n\n"
+        message << "グループ名: #{group.name}\n"
+        message << "参加メンバー: #{group.users.count}人"
+
+        # TODO: 今後、家計簿データの確認モードで同じグループの家計簿データの合計を出す機能などを実装予定
+        message
       end
     end
   end
