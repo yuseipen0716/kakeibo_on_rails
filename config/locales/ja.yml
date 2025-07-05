@@ -9,3 +9,5 @@ ja:
         group_mode: 'グループ'
         expense_input_mode: '支出入力'
         income_input_mode: '収入入力'
+        group_creating_mode: 'グループ作成'
+        group_joining_mode: 'グループ参加'
