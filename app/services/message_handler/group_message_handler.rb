@@ -41,8 +41,8 @@ module MessageHandler
         validation_error = validate_group_creation(user, group_name)
         return validation_error if validation_error
 
-        # TODO: グループ作成処理を実装予定
-        "グループ作成処理（未実装）"
+        # グループ作成処理
+        create_group_for_user(user, group_name)
       end
 
       def handle_group_joining_mode(_user, _message)
@@ -85,6 +85,23 @@ module MessageHandler
         end
 
         nil
+      end
+
+      def create_group_for_user(user, group_name)
+        ActiveRecord::Base.transaction do
+          group = Group.create!(name: group_name)
+          user.update!(group: group, talk_mode: :default_mode)
+          group_creation_success_message(group)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        "グループの作成に失敗しました。#{e.message}"
+      end
+
+      def group_creation_success_message(group)
+        message = "グループを作成しました。\n\n"
+        message << "グループ名: #{group.name}\n"
+        message << "参加メンバー: #{group.users.count}人"
+        message
       end
     end
   end

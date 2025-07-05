@@ -53,9 +53,24 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
       let(:user) { create(:user, talk_mode: :group_creating_mode) }
 
       context "with valid group name" do
-        it "returns placeholder message" do
-          result = MessageHandler::GroupMessageHandler.perform(user, "テストグループ")
-          expect(result).to eq("グループ作成処理（未実装）")
+        it "creates group and associates user" do
+          expect do
+            MessageHandler::GroupMessageHandler.perform(user, "新しいグループ")
+          end.to change(Group, :count).by(1)
+        end
+
+        it "updates user's group and talk_mode" do
+          MessageHandler::GroupMessageHandler.perform(user, "新しいグループ")
+          user.reload
+          expect(user.group.name).to eq("新しいグループ")
+          expect(user.talk_mode).to eq("default_mode")
+        end
+
+        it "returns success message" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "新しいグループ")
+          expect(result).to include("グループを作成しました。")
+          expect(result).to include("グループ名: 新しいグループ")
+          expect(result).to include("参加メンバー: 1人")
         end
       end
 
@@ -88,6 +103,14 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
           result = MessageHandler::GroupMessageHandler.perform(user, "新しいグループ")
           expect(result).to eq("既にグループに参加しています。")
           expect(user.reload.talk_mode).to eq("default_mode")
+        end
+      end
+
+      context "with database errors" do
+        it "handles ActiveRecord errors gracefully" do
+          allow(Group).to receive(:create!).and_raise(ActiveRecord::RecordInvalid.new(Group.new))
+          result = MessageHandler::GroupMessageHandler.perform(user, "テストグループ")
+          expect(result).to include("グループの作成に失敗しました。")
         end
       end
     end
