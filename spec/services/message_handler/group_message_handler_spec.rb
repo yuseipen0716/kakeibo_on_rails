@@ -52,9 +52,43 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
     context "when user is in group_creating_mode" do
       let(:user) { create(:user, talk_mode: :group_creating_mode) }
 
-      it "returns placeholder message" do
-        result = MessageHandler::GroupMessageHandler.perform(user, "テストグループ")
-        expect(result).to eq("グループ作成処理（未実装）")
+      context "with valid group name" do
+        it "returns placeholder message" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "テストグループ")
+          expect(result).to eq("グループ作成処理（未実装）")
+        end
+      end
+
+      context "with validation errors" do
+        it "returns error message for blank group name" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "")
+          expect(result).to eq("グループ名を入力してください。")
+        end
+
+        it "returns error message for whitespace only group name" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "   ")
+          expect(result).to eq("グループ名を入力してください。")
+        end
+
+        it "returns error message for group name longer than 10 characters" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "12345678901")
+          expect(result).to eq("グループ名は10文字以内で入力してください。")
+        end
+
+        it "returns error message for duplicate group name" do
+          create(:group, name: "既存グループ")
+          result = MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          expect(result).to eq("そのグループ名は既に使用されています。別のグループ名で作成してください。")
+        end
+
+        it "returns error message and changes talk_mode when user already belongs to a group" do
+          existing_group = create(:group, name: "既存グループ")
+          user.update(group: existing_group)
+
+          result = MessageHandler::GroupMessageHandler.perform(user, "新しいグループ")
+          expect(result).to eq("既にグループに参加しています。")
+          expect(user.reload.talk_mode).to eq("default_mode")
+        end
       end
     end
 

@@ -34,7 +34,14 @@ module MessageHandler
         end
       end
 
-      def handle_group_creating_mode(_user, _message)
+      def handle_group_creating_mode(user, message)
+        group_name = message.strip
+
+        # バリデーション
+        validation_error = validate_group_creation(user, group_name)
+        return validation_error if validation_error
+
+        # TODO: グループ作成処理を実装予定
         "グループ作成処理（未実装）"
       end
 
@@ -65,6 +72,19 @@ module MessageHandler
         message << "参加したいグループ名を入力してください"
 
         message.chomp
+      end
+
+      def validate_group_creation(user, group_name)
+        return "グループ名を入力してください。" if group_name.blank?
+        return "グループ名は10文字以内で入力してください。" if group_name.length > 10
+        return "そのグループ名は既に使用されています。別のグループ名で作成してください。" if Group.exists?(name: group_name)
+
+        if user.group.present?
+          user.update(talk_mode: :default_mode)
+          return "既にグループに参加しています。"
+        end
+
+        nil
       end
     end
   end
