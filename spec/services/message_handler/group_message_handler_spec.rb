@@ -72,6 +72,18 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
           expect(result).to include("グループ名: 新しいグループ")
           expect(result).to include("参加メンバー: 1人")
         end
+
+        it "handles group name with special characters" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "家族😊💰")
+          expect(result).to include("グループを作成しました。")
+          expect(result).to include("グループ名: 家族😊💰")
+        end
+
+        it "handles exactly 10 character group name" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "1234567890")
+          expect(result).to include("グループを作成しました。")
+          expect(result).to include("グループ名: 1234567890")
+        end
       end
 
       context "with validation errors" do
@@ -87,6 +99,11 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
 
         it "returns error message for group name longer than 10 characters" do
           result = MessageHandler::GroupMessageHandler.perform(user, "12345678901")
+          expect(result).to eq("グループ名は10文字以内で入力してください。")
+        end
+
+        it "returns error message for multi-byte characters exceeding 10 characters" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "あいうえおかきくけこさ") # 11文字
           expect(result).to eq("グループ名は10文字以内で入力してください。")
         end
 

@@ -101,6 +101,8 @@ module MessageHandler
         message = "グループを作成しました。\n\n"
         message << "グループ名: #{group.name}\n"
         message << "参加メンバー: #{group.users.count}人"
+
+        # TODO: 今後、家計簿データの確認モードで同じグループの家計簿データの合計を出す機能などを実装予定
         message
       end
     end
