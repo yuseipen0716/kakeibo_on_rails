@@ -138,9 +138,30 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
       context "with valid group name" do
         let!(:existing_group) { create(:group, name: "既存グループ") }
 
-        it "returns placeholder message" do
+        it "joins existing group and associates user" do
+          expect do
+            MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          end.to change { user.reload.group }.from(nil).to(existing_group)
+        end
+
+        it "updates user's talk_mode to default_mode" do
+          MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          expect(user.reload.talk_mode).to eq("default_mode")
+        end
+
+        it "returns success message" do
           result = MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
-          expect(result).to eq("グループ参加処理（未実装）")
+          expect(result).to include("グループ: 既存グループ に参加しました。")
+          expect(result).to include("グループ名: 既存グループ")
+          expect(result).to include("参加メンバー: 1人")
+        end
+
+        it "increments group member count when multiple users join" do
+          another_user = create(:user)
+          existing_group.users << another_user
+
+          result = MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          expect(result).to include("参加メンバー: 2人")
         end
       end
 
@@ -177,6 +198,16 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
           result = MessageHandler::GroupMessageHandler.perform(user, "同じグループ")
           expect(result).to eq("既にそのグループに参加しています。")
           expect(user.reload.talk_mode).to eq("default_mode")
+        end
+      end
+
+      context "with database errors" do
+        let!(:existing_group) { create(:group, name: "既存グループ") }
+
+        it "handles ActiveRecord errors gracefully" do
+          allow(user).to receive(:update!).and_raise(ActiveRecord::RecordInvalid.new(user))
+          result = MessageHandler::GroupMessageHandler.perform(user, "既存グループ")
+          expect(result).to include("グループへの参加に失敗しました。")
         end
       end
     end

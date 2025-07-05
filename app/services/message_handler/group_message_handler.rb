@@ -52,8 +52,8 @@ module MessageHandler
         validation_error = validate_group_joining(user, group_name)
         return validation_error if validation_error
 
-        # TODO: グループ参加処理を実装予定
-        "グループ参加処理（未実装）"
+        # グループ参加処理
+        join_existing_group(user, group_name)
       end
 
       def group_mode_message
@@ -127,6 +127,24 @@ module MessageHandler
         end
 
         nil
+      end
+
+      def join_existing_group(user, group_name)
+        target_group = Group.find_by(name: group_name)
+
+        ActiveRecord::Base.transaction do
+          user.update!(group: target_group, talk_mode: :default_mode)
+          group_joining_success_message(target_group)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        "グループへの参加に失敗しました。#{e.message}"
+      end
+
+      def group_joining_success_message(group)
+        message = "グループ: #{group.name} に参加しました。\n\n"
+        message << "グループ名: #{group.name}\n"
+        message << "参加メンバー: #{group.users.count}人"
+        message
       end
     end
   end
