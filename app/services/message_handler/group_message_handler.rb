@@ -2,8 +2,8 @@ module MessageHandler
   class GroupMessageHandler
     MESSAGE_TYPE = :group
 
-    CREATE_COMMAND = "作成"
-    JOIN_COMMAND = "参加"
+    CREATE_COMMAND = "作成".freeze
+    JOIN_COMMAND = "参加".freeze
 
     class << self
       def perform(user, message)
@@ -34,11 +34,11 @@ module MessageHandler
         end
       end
 
-      def handle_group_creating_mode(user, message)
+      def handle_group_creating_mode(_user, _message)
         "グループ作成処理（未実装）"
       end
 
-      def handle_group_joining_mode(user, message)
+      def handle_group_joining_mode(_user, _message)
         "グループ参加処理（未実装）"
       end
 
