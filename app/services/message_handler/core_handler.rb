@@ -92,8 +92,8 @@ module MessageHandler
           MessageHandler::InputMessageHandler.perform(user, message)
         when :show_mode
           MessageHandler::ShowMessageHandler.perform(user, message)
-        when :group_mode
-          "handle_other_group"
+        when :group_mode, :group_creating_mode, :group_joining_mode
+          MessageHandler::GroupMessageHandler.perform(user, message)
         else
           "不明なメッセージ"
         end
