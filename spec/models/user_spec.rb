@@ -22,7 +22,8 @@ RSpec.describe User, type: :model do
         "expense_input_mode" => 4,
         "income_input_mode" => 5,
         "group_creating_mode" => 6,
-        "group_joining_mode" => 7
+        "group_joining_mode" => 7,
+        "group_leaving_confirmation_mode" => 8
       }
       expect(User.talk_modes).to eq(expected_values)
     end
@@ -39,6 +40,11 @@ RSpec.describe User, type: :model do
     it "can transition to group_joining_mode" do
       user.update(talk_mode: :group_joining_mode)
       expect(user.group_joining_mode?).to be true
+    end
+
+    it "can transition to group_leaving_confirmation_mode" do
+      user.update(talk_mode: :group_leaving_confirmation_mode)
+      expect(user.group_leaving_confirmation_mode?).to be true
     end
   end
 end
