@@ -72,6 +72,15 @@ module MessageHandler
         end
       end
 
+      def group_leaving_confirmation_message(user)
+        message = "トークモード: #{User.human_attribute_name("talk_mode.group_leaving_confirmation_mode")}\n"
+        message << "--------------------------------------\n"
+        message << "グループ「#{user.group.name}」から脱退しますか？\n\n"
+        message << "脱退する場合は「はい」、キャンセルする場合は「いいえ」と入力してください。"
+
+        message.chomp
+      end
+
       def group_mode_message
         message = "トークモード: #{User.human_attribute_name("talk_mode.group_mode")}\n"
         message << "--------------------------------------\n"
@@ -163,15 +172,6 @@ module MessageHandler
 
         # TODO: 今後、家計簿データの確認モードで同じグループの家計簿データの合計を出す機能などを実装予定
         message
-      end
-
-      def group_leaving_confirmation_message(user)
-        message = "トークモード: #{User.human_attribute_name("talk_mode.group_leaving_confirmation_mode")}\n"
-        message << "--------------------------------------\n"
-        message << "グループ「#{user.group.name}」から脱退しますか？\n\n"
-        message << "脱退する場合は「はい」、キャンセルする場合は「いいえ」と入力してください。"
-
-        message.chomp
       end
 
       def leave_group(user)

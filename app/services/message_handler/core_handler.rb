@@ -10,7 +10,7 @@ module MessageHandler
     }.freeze
     class << self
       # messageを受け取り、適切な処理に振り分け、replyを返す
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      # rubocop:disable Metrics/CyclomaticComplexity
       def perform(message, line_id)
         current_user = User.find_by(line_id:)
         case message
@@ -23,16 +23,26 @@ module MessageHandler
         when BUILT_IN_MESSAGE[:SHOW]
           current_user.update(talk_mode: :show_mode) && MessageHandler::ShowMessageHandler.show_first_message
         when BUILT_IN_MESSAGE[:GROUP]
-          current_user.update(talk_mode: :group_mode) && group_mode_message
+          handle_group_entry(current_user)
         when BUILT_IN_MESSAGE[:HELP]
           current_user.update(talk_mode: :default_mode) && help_message(current_user.talk_mode.to_sym)
         else
           handle_other_message(current_user, message)
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       private
+
+      def handle_group_entry(user)
+        if user.group.present?
+          user.update(talk_mode: :group_leaving_confirmation_mode)
+          MessageHandler::GroupMessageHandler.group_leaving_confirmation_message(user)
+        else
+          user.update(talk_mode: :group_mode)
+          group_mode_message
+        end
+      end
 
       def group_mode_message
         message = "トークモード: #{User.human_attribute_name("talk_mode.group_mode")}\n"
@@ -92,7 +102,7 @@ module MessageHandler
           MessageHandler::InputMessageHandler.perform(user, message)
         when :show_mode
           MessageHandler::ShowMessageHandler.perform(user, message)
-        when :group_mode, :group_creating_mode, :group_joining_mode
+        when :group_mode, :group_creating_mode, :group_joining_mode, :group_leaving_confirmation_mode
           MessageHandler::GroupMessageHandler.perform(user, message)
         else
           "不明なメッセージ"
