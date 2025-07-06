@@ -6,5 +6,6 @@
       "Bash(curl:*)",
       "Read(.env)"
     ]
-  }
+  },
+  "includeCoAuthoredBy": false
 }
