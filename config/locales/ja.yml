@@ -11,3 +11,4 @@ ja:
         income_input_mode: '収入入力'
         group_creating_mode: 'グループ作成'
         group_joining_mode: 'グループ参加'
+        group_leaving_confirmation_mode: 'グループ脱退確認'
