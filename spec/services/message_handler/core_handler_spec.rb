@@ -114,18 +114,40 @@ RSpec.describe MessageHandler::CoreHandler do
     # グループ作成・参加
     context "when create or participate in group" do
       let(:message) { MessageHandler::CoreHandler::BUILT_IN_MESSAGE[:GROUP] }
-      let(:response_message) do
-        # グループ機能をリリースする際に修正が必要
-        <<~RESPONSE
-          トークモード: グループ
-          --------------------------------------
-          グループを新しく作成する場合は「作成」と入力してください。
-          グループに参加する場合は「参加」と入力してください。
-        RESPONSE
+
+      context "when user does not belong to any group" do
+        let(:response_message) do
+          <<~RESPONSE
+            トークモード: グループ
+            --------------------------------------
+            グループを新しく作成する場合は「作成」と入力してください。
+            グループに参加する場合は「参加」と入力してください。
+          RESPONSE
+        end
+
+        it "transitions to group_mode and returns group_mode_message" do
+          expect(result).to eq(response_message.chomp)
+          expect(user.reload.talk_mode).to eq("group_mode")
+        end
       end
 
-      it "return group_first_message" do
-        expect(result).to eq(response_message.chomp)
+      context "when user already belongs to a group" do
+        let!(:group) { create(:group, name: "既存グループ") }
+        let(:user) { create(:user, line_id:, group:) }
+        let(:response_message) do
+          <<~RESPONSE
+            トークモード: グループ脱退確認
+            --------------------------------------
+            グループ「既存グループ」から脱退しますか？
+
+            脱退する場合は「はい」、キャンセルする場合は「いいえ」と入力してください。
+          RESPONSE
+        end
+
+        it "transitions to group_leaving_confirmation_mode and returns confirmation message" do
+          expect(result).to eq(response_message.chomp)
+          expect(user.reload.talk_mode).to eq("group_leaving_confirmation_mode")
+        end
       end
     end
 

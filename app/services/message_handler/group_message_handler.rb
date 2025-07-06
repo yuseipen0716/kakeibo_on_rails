@@ -23,6 +23,15 @@ module MessageHandler
         end
       end
 
+      def group_leaving_confirmation_message(user)
+        message = "トークモード: #{User.human_attribute_name("talk_mode.group_leaving_confirmation_mode")}\n"
+        message << "--------------------------------------\n"
+        message << "グループ「#{user.group.name}」から脱退しますか？\n\n"
+        message << "脱退する場合は「はい」、キャンセルする場合は「いいえ」と入力してください。"
+
+        message.chomp
+      end
+
       private
 
       def handle_group_mode(user, message)
@@ -70,15 +79,6 @@ module MessageHandler
         else
           group_leaving_confirmation_message(user)
         end
-      end
-
-      def group_leaving_confirmation_message(user)
-        message = "トークモード: #{User.human_attribute_name("talk_mode.group_leaving_confirmation_mode")}\n"
-        message << "--------------------------------------\n"
-        message << "グループ「#{user.group.name}」から脱退しますか？\n\n"
-        message << "脱退する場合は「はい」、キャンセルする場合は「いいえ」と入力してください。"
-
-        message.chomp
       end
 
       def group_mode_message
