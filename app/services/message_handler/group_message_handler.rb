@@ -4,6 +4,8 @@ module MessageHandler
 
     CREATE_COMMAND = "作成".freeze
     JOIN_COMMAND = "参加".freeze
+    YES_COMMAND = "はい".freeze
+    NO_COMMAND = "いいえ".freeze
 
     class << self
       def perform(user, message)
@@ -14,9 +16,20 @@ module MessageHandler
           handle_group_creating_mode(user, message)
         when :group_joining_mode
           handle_group_joining_mode(user, message)
+        when :group_leaving_confirmation_mode
+          handle_group_leaving_confirmation_mode(user, message)
         else
           "不明なグループモード"
         end
+      end
+
+      def group_leaving_confirmation_message(user)
+        message = "トークモード: #{User.human_attribute_name("talk_mode.group_leaving_confirmation_mode")}\n"
+        message << "--------------------------------------\n"
+        message << "グループ「#{user.group.name}」から脱退しますか？\n\n"
+        message << "脱退する場合は「はい」、キャンセルする場合は「いいえ」と入力してください。"
+
+        message.chomp
       end
 
       private
@@ -54,6 +67,18 @@ module MessageHandler
 
         # グループ参加処理
         join_existing_group(user, group_name)
+      end
+
+      def handle_group_leaving_confirmation_mode(user, message)
+        case message.strip
+        when YES_COMMAND
+          leave_group(user)
+        when NO_COMMAND
+          user.update(talk_mode: :default_mode)
+          "キャンセルしました。"
+        else
+          group_leaving_confirmation_message(user)
+        end
       end
 
       def group_mode_message
@@ -147,6 +172,12 @@ module MessageHandler
 
         # TODO: 今後、家計簿データの確認モードで同じグループの家計簿データの合計を出す機能などを実装予定
         message
+      end
+
+      def leave_group(user)
+        group_name = user.group.name
+        user.update(group: nil, talk_mode: :default_mode)
+        "グループ「#{group_name}」から脱退しました。"
       end
     end
   end

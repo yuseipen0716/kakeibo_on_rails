@@ -223,6 +223,60 @@ RSpec.describe MessageHandler::GroupMessageHandler, type: :service do
       end
     end
 
+    context "when user is in group_leaving_confirmation_mode" do
+      let(:group) { create(:group, name: "テストグループ") }
+      let(:user) { create(:user, group: group, talk_mode: :group_leaving_confirmation_mode) }
+
+      context "with はい command" do
+        it "leaves the group successfully" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "はい")
+
+          expect(user.reload.group).to be_nil
+          expect(user.talk_mode).to eq("default_mode")
+          expect(result).to eq("グループ「テストグループ」から脱退しました。")
+        end
+      end
+
+      context "with いいえ command" do
+        it "cancels group leaving" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "いいえ")
+
+          expect(user.reload.group).to eq(group)
+          expect(user.talk_mode).to eq("default_mode")
+          expect(result).to eq("キャンセルしました。")
+        end
+      end
+
+      context "with invalid command" do
+        it "shows confirmation message again" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "不正なコマンド")
+
+          expect(user.reload.group).to eq(group)
+          expect(user.talk_mode).to eq("group_leaving_confirmation_mode")
+          expect(result).to include("グループ「テストグループ」から脱退しますか？")
+          expect(result).to include("脱退する場合は「はい」、キャンセルする場合は「いいえ」と入力してください。")
+        end
+      end
+
+      context "with commands containing whitespace" do
+        it "handles はい with surrounding whitespace" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "  はい  ")
+
+          expect(user.reload.group).to be_nil
+          expect(user.talk_mode).to eq("default_mode")
+          expect(result).to eq("グループ「テストグループ」から脱退しました。")
+        end
+
+        it "handles いいえ with surrounding whitespace" do
+          result = MessageHandler::GroupMessageHandler.perform(user, "  いいえ  ")
+
+          expect(user.reload.group).to eq(group)
+          expect(user.talk_mode).to eq("default_mode")
+          expect(result).to eq("キャンセルしました。")
+        end
+      end
+    end
+
     context "when user is in unknown group mode" do
       let(:user) { create(:user, talk_mode: :default_mode) }
 
