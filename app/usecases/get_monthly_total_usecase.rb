@@ -41,24 +41,65 @@ class GetMonthlyTotalUsecase
 
   # @periodにおける費目ごとの合計金額を返す
   def monthly_total_group_by_category_name
-    expenses_by_category_name = @user.expense_records
-                                     .active
-                                     .expense
-                                     .where(transaction_date: @period)
-                                     .joins(:category)
-                                     .group("categories.name")
-                                     .sum(:amount)
+    personal_expenses = get_expenses_by_category_for_user(@user)
 
-    expense_messages = expenses_by_category_name.map do |category_name, total|
-      "#{category_name}: #{total}円"
+    group_expenses = if @user.group
+                       group_members = @user.group.users
+                       get_expenses_by_category_for_users(group_members)
+                     else
+                       {}
+                     end
+
+    format_combined_expenses_message(personal_expenses, group_expenses)
+  end
+
+  def get_expenses_by_category_for_user(user)
+    user.expense_records
+        .active
+        .expense
+        .where(transaction_date: @period)
+        .joins(:category)
+        .group("categories.name")
+        .sum(:amount)
+  end
+
+  def get_expenses_by_category_for_users(users)
+    ExpenseRecord.where(user: users)
+                 .active
+                 .expense
+                 .where(transaction_date: @period)
+                 .joins(:category)
+                 .group("categories.name")
+                 .sum(:amount)
+  end
+
+  def format_combined_expenses_message(personal_expenses, group_expenses)
+    messages = ["#{formatted_year_month}の費目別合計", ""]
+
+    # 個人の合計
+    messages << "<個人>"
+    if personal_expenses.any?
+      personal_expenses.sort.each do |category_name, total|
+        messages << "#{category_name}: #{total}円"
+      end
+    else
+      messages << "データなし"
     end
 
-    # 返却するメッセージの1行目をここで用意
-    # 2行目は空行を出力したいため、空文字の要素を置いておく。
-    head_message = ["#{formatted_year_month}の費目別合計", ""]
+    # グループの合計（グループに所属している場合のみ）
+    if @user.group
+      messages << ""
+      messages << "<グループ>"
+      if group_expenses.any?
+        group_expenses.sort.each do |category_name, total|
+          messages << "#{category_name}: #{total}円"
+        end
+      else
+        messages << "データなし"
+      end
+    end
 
-    # 先頭に表示するメッセージに、各費目ごとのメッセージの配列を合わせて、join
-    (head_message + expense_messages).join("\n")
+    messages.join("\n")
   end
 
   def formatted_year_month

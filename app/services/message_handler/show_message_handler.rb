@@ -39,6 +39,8 @@ module MessageHandler
           ------------
 
           のように入力してください。
+
+          ※「今月」のみ入力すると、個人とグループ（所属している場合）の費目別合計が表示されます。
         SHOW
 
         message << first_message
