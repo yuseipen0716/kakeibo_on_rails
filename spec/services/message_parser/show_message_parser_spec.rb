@@ -45,7 +45,7 @@ RSpec.describe MessageParser::ShowMessageParser do
         let(:message) { "2023-11" }
 
         it "returns 2023/11's total" do
-          expect(result).to eq("2023年11月の費目別合計\n\n交際費: 3000円")
+          expect(result).to eq("2023年11月の費目別合計\n\n<個人>\n交際費: 3000円")
         end
       end
 
@@ -62,7 +62,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { "先月" }
 
           it "returns last month's total" do
-            expect(result).to eq("#{1.month.ago.strftime("%Y年%m月")}の費目別合計\n\n食費: 2000円")
+            expect(result).to eq("#{1.month.ago.strftime("%Y年%m月")}の費目別合計\n\n<個人>\n食費: 2000円")
           end
         end
       end
@@ -99,7 +99,7 @@ RSpec.describe MessageParser::ShowMessageParser do
           let(:message) { "今月" }
 
           it "returns this month's total" do
-            expect(result).to eq("#{Time.zone.now.strftime("%Y年%m月")}の費目別合計\n\n交通費: 3000円\n食費: 1500円")
+            expect(result).to eq("#{Time.zone.now.strftime("%Y年%m月")}の費目別合計\n\n<個人>\n交通費: 3000円\n食費: 1500円")
           end
         end
       end
