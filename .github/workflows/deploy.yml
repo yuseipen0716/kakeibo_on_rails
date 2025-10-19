@@ -34,10 +34,12 @@ jobs:
               echo "Gemfile changes detected, building containers..."
               git pull origin main &&
               docker compose -f docker-compose.production.yml build &&
-              docker compose -f docker-compose.production.yml up -d
+              docker compose -f docker-compose.production.yml up -d &&
+              docker compose -f docker-compose.production.yml exec -T web bin/rails db:migrate RAILS_ENV=production
             else
               echo "No Gemfile changes, regular deploy"
               git pull origin main &&
-              docker compose -f docker-compose.production.yml up -d
+              docker compose -f docker-compose.production.yml up -d &&
+              docker compose -f docker-compose.production.yml exec -T web bin/rails db:migrate RAILS_ENV=production
             fi
           '
