@@ -27,17 +27,19 @@ jobs:
             git fetch origin main &&
 
             # サービスを停止しておく
-            docker-compose -f docker-compose.production.yml down &&
+            docker compose -f docker-compose.production.yml down &&
 
             # Gemfile関連に変更があるか確認
             if git diff --name-only HEAD..origin/main | grep "Gemfile\|Gemfile.lock"; then
               echo "Gemfile changes detected, building containers..."
               git pull origin main &&
-              docker-compose -f docker-compose.production.yml build &&
-              docker-compose -f docker-compose.production.yml up -d
+              docker compose -f docker-compose.production.yml build &&
+              docker compose -f docker-compose.production.yml up -d &&
+              docker compose -f docker-compose.production.yml exec -T web bin/rails db:migrate RAILS_ENV=production
             else
               echo "No Gemfile changes, regular deploy"
               git pull origin main &&
-              docker-compose -f docker-compose.production.yml up -d
+              docker compose -f docker-compose.production.yml up -d &&
+              docker compose -f docker-compose.production.yml exec -T web bin/rails db:migrate RAILS_ENV=production
             fi
           '
