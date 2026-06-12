@@ -12,7 +12,7 @@ gem "rails", "~> 7.1.3"
 gem "sqlite3", "~> 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.4.0"
+gem "puma", "~> 7.2.1"
 
 # rack
 gem "rack", "~> 3.1"
